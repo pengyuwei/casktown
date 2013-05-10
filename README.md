@@ -1,4 +1,6 @@
-casktown
+木桶镇RPG
 ========
 
-This is a Chinese ARPG(Action Role Playing Game) game, In casks on the legend of the town,use the Python and VC, if you're familiar with the Python language,welcome to join our development team. Where are we go? The world is in their own keyboard!
+大一的时候在学校机房写的RPG游戏。
+
+运行环境是DOS 6 + QuickBasic 4.5
