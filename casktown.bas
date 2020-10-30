@@ -1,11 +1,4 @@
-DECLARE SUB room31 ()
-DECLARE SUB room11 ()
-DECLARE SUB room12 ()
-DECLARE SUB room13 ()
-DECLARE SUB room14 ()
-DECLARE SUB room5 ()
-DECLARE SUB room3 ()
-DECLARE SUB room4 ()
+DECLARE SUB loadmap (mm AS INTEGER)
 DECLARE SUB clr ()
 DECLARE SUB whitesay (say$)
 DECLARE SUB LoadGame (x!, y!, mx!, my!, autotime!, runstep!)
@@ -28,7 +21,7 @@ DECLARE SUB debug ()
 DECLARE SUB pal ()
 DECLARE SUB room2 ()
 DECLARE SUB readmap (a)
-DECLARE SUB readhouse (x AS INTEGER)
+DECLARE SUB readhouse ()
 DECLARE SUB map5 ()
 DECLARE SUB room1 ()
 DECLARE SUB map4 ()
@@ -88,7 +81,7 @@ DIM SHARED lef$
 DIM SHARED righ$
 DIM SHARED in AS STRING           'inkey$
 DIM SHARED into AS INTEGER        'true--in the house  else out of house
-DIM SHARED whichhouse AS INTEGER
+DIM SHARED whichhouse
 DIM SHARED loadxy AS INTEGER
 DIM SHARED manname AS STRING
 DIM SHARED display AS INTEGER 'display the map name
@@ -100,7 +93,7 @@ DIM SHARED who AS INTEGER
 DIM SHARED map AS INTEGER
 DIM SHARED mapname AS STRING
 DIM SHARED retn AS INTEGER, retn1 AS INTEGER
-DIM SHARED maythough(19) AS STRING
+DIM SHARED maythough(9) AS STRING
 DIM SHARED find AS INTEGER
 DIM SHARED Search AS STRING
 DIM SHARED active AS INTEGER
@@ -114,10 +107,7 @@ maythough(6) = "E"
 maythough(7) = "G"
 maythough(8) = "g"
 maythough(9) = "R"
-maythough(10) = " "
-maythough(11) = "$"
-maythough(12) = "!"
-CONST total = 12
+CONST total = 9
 CONST false = 0
 CONST true = -1
 loadxy = true
@@ -130,7 +120,8 @@ everystep = 10
 map = 1
 initstore
 CLS
-map1
+'map1
+loadmap (1)
 drawmap
 mx = 2: my = 3
 x = mx * 40 - 40: y = my * 40 - 40          'is important
@@ -148,7 +139,6 @@ IF TIMER - autotime > 2 THEN CALL autorun: autotime = TIMER
 IF in = "S" AND into = true THEN SaveGame x, y, mx, my, autotime, runstep
 IF in = "L" THEN GOSUB LoadGame
 IF in = CHR$(0) + CHR$(45) OR in = CHR$(0) + CHR$(68) THEN END
-IF in = "5" THEN drawmap
 IF in = up$ THEN
    'IF toward = "up" THEN
    'PUT (x + 1, y + 1), man1, PSET
@@ -252,17 +242,22 @@ IF in = " " OR in = "z" OR in = CHR$(13) THEN
    IF NOT say THEN IF find THEN findsth
    IF say THEN rpgsay
 END IF
-IF LCASE$(MID$(o(my), mx, 1)) >= "1" OR LCASE$(MID$(o(my), mx, 1)) >= "9" THEN
-      clcon                                    'in which room
+IF LCASE$(MID$(m(my), mx, 1)) = "i" THEN
+   clcon
+   loadxy = false
+   IF into THEN
       mx0 = mx: my0 = my + 1
-      readhouse whichhouse + VAL(LCASE$(MID$(o(my), mx, 1))) - 1
+      readhouse
       drawmap
-END IF
-IF LCASE$(MID$(m(my), mx, 1)) = "o" THEN       'out of room
+      into = NOT into
+    ELSE
        readmap (map)
        mx = mx0: my = my0
        drawmap
+       into = true
+   END IF
 END IF
+
 IF LCASE$(MID$(m(my), mx, 1)) = "e" THEN
    CALL clcon
    IF MID$(m(my), mx, 1) = "e" THEN map = map + 1: retn = false ELSE map = map - 1: retn = true
@@ -478,13 +473,15 @@ LOCATE 21, 1: PRINT "Nextmap="; nextmap
 END SUB
 
 SUB drawmap '--------------dim man(4 + INT((x*1 + 7) / 8) * y * 4) when screen 12
+FOR cx = 0 TO 600 STEP 40
+'    LINE (cx, 0)-(cx, 320), 3
+NEXT
+FOR cy = 0 TO 320 STEP 40
+'    LINE (0, cy)-(600, cy), 3
+NEXT
 COLOR 3
 LINE (0, 0)-(600, 320), 1, B
-FOR i = 15 TO 1 STEP -1
-    FOR dy = 8 TO 1 STEP -1
-        dmx = i * 40 - 40: dmy = dy * 40 - 40
-        PUT (dmx, dmy), space, PSET
-    NEXT
+FOR i = 1 TO 15
     FOR dy = 8 TO 1 STEP -1
         m$ = MID$(m(dy), i, 1)
         dmx = i * 40 - 40: dmy = dy * 40 - 40
@@ -526,8 +523,9 @@ FOR i = 15 TO 1 STEP -1
         PUT (dmx + 1, dmy + 1), house4, PSET
         CASE "%"
         PUT (dmx + 1, dmy + 1), house5, PSET
-        CASE "0", "i", "z", "e", "g", "r", "f", " ", "o"
+        CASE "0", "i", "z", "e", "g", "r", "f"
         PUT (dmx, dmy), space, PSET
+       
         CASE ELSE
         END SELECT
     LINE (0, 0)-(600, 320), 1, B
@@ -631,7 +629,7 @@ PRINT "E-mail   : Toyshop@263.net"
 pal
 COLOR 15
 LOCATE 11, 15
-PRINT "ÄÚ²¿²âÊÔ°æ  V56.9"
+PRINT "ÄÚ²¿²âÊÔ°æ  V56.8"
 
 COLOR 13
 LOCATE 14, 15
@@ -713,9 +711,9 @@ LINE (45, 125)-(259, 145), cc, BF
 LOCATE 8, 7: COLOR 10: PRINT "s    t    u    d    i    o"
 LOCATE 9, 35: PRINT "PRESENT"
 LOCATE 19, 50: PRINT "    ART : G.W."
-LOCATE 20, 50: PRINT "Program : P.Y.W.(SEA)"
+LOCATE 20, 50: PRINT "Program : P.Y.W.(FFB)"
 LOCATE 21, 50: PRINT "   Main : 1998.11-1999.2"
-LOCATE 22, 48: PRINT "×îºóÐÞ¸ÄÓÚ1999Äê08ÔÂ21ÈÕ00:24."
+LOCATE 22, 48: PRINT "×îºóÐÞ¸ÄÓÚ1999Äê08ÔÂ17ÈÕ."
 
 FOR toyi = 1 TO 42
     PALETTE 15, 65535 * toyi + 256 * toyi + toyi
@@ -1276,23 +1274,43 @@ RETURN
 
 END SUB
 
+SUB loadmap (mm AS INTEGER)
+OPEN "d:\pyw\d\basic\rpg\1.txt" FOR INPUT AS #1
+   INPUT #1, mapname
+   whichhouse = 1
+   INPUT #1, mx
+   INPUT #1, my
+   INPUT #1, m(1)
+   INPUT #1, m(2)
+   INPUT #1, m(3)
+   INPUT #1, m(4)
+   INPUT #1, m(5)
+   INPUT #1, m(6)
+   INPUT #1, m(7)
+   INPUT #1, m(8)
+
+   l(1) = 0: start(1) = 1
+   s(1) = manname + "£º~~ÕâÊÇÄÄ£¿£¿£¡£¡``ss"
+
+END SUB
+
 SUB map1   '15x8
 mapname = "Ä¾Í°Ð¡Õò"
 whichhouse = 1
 IF loadxy THEN IF retn THEN mx = 14: my = 7 ELSE mx = 1: my = 2
-m(1) = "thxt hxthxhxttt"
-m(2) = "tix  ixtixix1tt"
-IF action(1) THEN m(2) = " ix1 ixtixix tt"
-IF action(2) THEN m(2) = " ix14ixtixix tt"
-m(3) = "             tt"
-m(4) = "t t  hx t t ttt"
-m(5) = "t t  ix t t ttt"
-m(6) = "t             t"
-m(7) = "hx   tt ttttt t"
+m(1) = "thxt0hxthxhxttt"
+m(2) = "txx00xxtxxxx1tt"
+IF action(1) THEN m(2) = "0xx10xxtxxxx0tt"
+IF action(2) THEN m(2) = "0xx14xxtxxxx0tt"
+m(3) = "0000000000000tt"
+m(4) = "t0t00hx0t0t0ttt"
+m(5) = "t0t00ix0t0t0ttt"
+m(6) = "t0000000000000t"
+m(7) = "hx000tt0ttttt0t"
 m(8) = "xxtttttttttttet"
 
 o(1) = "000000000000000"
-o(2) = "a20003004050000"
+o(2) = "a20000000000000"
 o(3) = "000000000000000"
 o(4) = "t00000000000000"
 o(5) = "t00001000000000"
@@ -1336,7 +1354,6 @@ m(5) = "y0000000000000y"
 m(6) = "yy000000000y00y"
 m(7) = "y0000y00000000y"
 m(8) = "yyyyyyyyyyyyyyy"
-
 o(1) = "000000000000000"
 o(2) = "000000000000000"
 o(3) = "000000000000000"
@@ -1534,27 +1551,27 @@ END SUB
 
 SUB map2
 mapname = "´åÍâÐ¡Â·"
-whichhouse = 11
+whichhouse = 0
 IF action(1) THEN whichhouse = 9
 IF loadxy THEN IF retn THEN mx = 2: my = 7 ELSE mx = 1: my = 2
 IF retn1 THEN mx = 13: my = 7
 m(1) = "Etttttttttttttt"
-m(2) = "           $!!t"
-m(3) = "t tt3         t"
-IF action(1) THEN m(3) = "t tt        3 t"
-m(4) = "t tttt  ttt  tt"
-m(5) = "t       t@tt tt"
-m(6) = "t t$tt  ttt  tt"
-m(7) = "t           4tt"
-IF action(1) THEN m(7) = "t            tt"
+m(2) = "00000000000$!!t"
+m(3) = "t0tt3000000000t"
+IF action(1) THEN m(3) = "t0tt0000000030t"
+m(4) = "t0tttt00ttt00tt"
+m(5) = "t0000000t@tt0tt"
+m(6) = "t0t$tt00ttt00tt"
+m(7) = "t000000000004tt"
+IF action(1) THEN m(7) = "t000000000000tt"
 m(8) = "tettttttttttttt"
 IF action(1) THEN m(8) = "tettttttttttgtt": nextmap = 8
-o(1) = "               "
-o(2) = "000000000001230"
+o(1) = "000000000000000"
+o(2) = "000000000000000"
 o(3) = "000000000000000"
 o(4) = "000000000000000"
 o(5) = "000000000000000"
-o(6) = "000400000000000"
+o(6) = "000000000000000"
 o(7) = "000000000000000"
 o(8) = "000000000000000"
 
@@ -1597,17 +1614,17 @@ END SUB
 
 SUB map3
 mapname = "Ê÷ÁÖÖÐ"
-whichhouse = 31
+whichhouse = 0
 IF loadxy THEN IF retn THEN mx = 14: my = 8 ELSE mx = 1: my = 2
 m(1) = "Etttttttttttttt"
-m(2) = "              t"
-m(3) = "tttttttttttt  t"
-m(4) = "t             t"
-m(5) = "t ttttttttttttt"
-m(6) = "t             t"
-m(7) = "t5ttttttttt   t"
-IF action(2) THEN m(7) = "t0ttttttttt   t"
-m(8) = "tt$tttttttttt e"
+m(2) = "00000000000000t"
+m(3) = "tttttttttttt00t"
+m(4) = "t0000000000000t"
+m(5) = "t0ttttttttttt0t"
+m(6) = "t0000000000000t"
+m(7) = "t5$tttttttt000t"
+IF action(2) THEN m(7) = "t0$tttttttt000t"
+m(8) = "ttttttttttttt0e"
 o(1) = "000000000000000"
 o(2) = "000000000000000"
 o(3) = "000000000000000"
@@ -1877,62 +1894,33 @@ IF TIMER - t < .01 THEN EXIT SUB
 t = TIMER
 IF add = 0 THEN add = -1
 c14 = c14 + add
-IF c14 > 55 OR c14 < 20 THEN add = -add
-'PALETTE 14, 65535 * INT(c14) + 256 * INT(c14) + INT(c14)
-PALETTE 14, 65535 * 63 + 256 * c14 + 63
+IF c14 > 45 OR c14 < 20 THEN add = -add
+PALETTE 14, 65535 * INT(c14) + 256 * INT(c14) + INT(c14)
+
 END SUB
 
-SUB readhouse (whichroom AS INTEGER)
-o(1) = "000000000000000"
-o(2) = "000000000000000"
-o(3) = "000000000000000"
-o(4) = "000000000000000"
-o(5) = "000000000000000"
-o(6) = "000000000000000"
-o(7) = "000000000000000"
-o(8) = "000000000000000"
-SELECT CASE whichroom
+SUB readhouse
+SELECT CASE whichhouse
        CASE 1
-              CALL room1
+                   CALL room1
        CASE 2
-              CALL room2
+                 CALL room2
        CASE 3
-              CALL room3
+                 'CALL room3
        CASE 4
-              CALL room4
-       CASE 5
-              CALL room5
+                 'CALL room4
        CASE 9
-              CALL room9
-       CASE 11
-              CALL room11
-       CASE 12
-              CALL room12
-       CASE 13
-              CALL room13
-       CASE 14
-              CALL room14
-       CASE 31
-              CALL room31
-     
+                  CALL room9
       
        CASE ELSE
 END SELECT
 END SUB
 
 SUB readmap (mm)
-o(1) = "000000000000000"
-o(2) = "000000000000000"
-o(3) = "000000000000000"
-o(4) = "000000000000000"
-o(5) = "000000000000000"
-o(6) = "000000000000000"
-o(7) = "000000000000000"
-o(8) = "000000000000000"
-
 SELECT CASE mm
    CASE 1
-         CALL map1
+         CALL loadmap(1)
+         'CALL map1
    CASE 2
          CALL map2
    CASE 3
@@ -1961,6 +1949,7 @@ SELECT CASE mm
         CALL map16
         display = false
    CASE ELSE
+      CALL loadmap(1)
 END SELECT
 loadxy = true
 END SUB
@@ -1969,15 +1958,15 @@ SUB room1
 toward = "up"
 mapname = "º«Ð¡Àï¼ÒÖÐ"
 mx = 8: my = 7
-m(1) = "               "
-m(2) = " wwwwwwwwwwwww "
-m(3) = " w  d2w   dd w "
-IF action(1) THEN m(3) = " w  d w 2 dd w "
-m(4) = " w    w      w "
-m(5) = " w  wwwww  www "
-m(6) = " w           w "
-m(7) = " wwwwww  wwwww "
-m(8) = "      zooz     "
+m(1) = "000000000000000"
+m(2) = "0wwwwwwwwwwwww0"
+m(3) = "0w00d2w000dd0w0"
+IF action(1) THEN m(3) = "0w00d0w020dd0w0"
+m(4) = "0w0000w000000w0"
+m(5) = "0w00wwwww00www0"
+m(6) = "0w00000000000w0"
+m(7) = "0wwwwww00wwwww0"
+m(8) = "000000ziiz00000"
 IF NOT action(1) THEN
    l(2) = 12: start(2) = 1
    s(1) = manname + "£ºº«¼ÑÀï£¡×ß£¬ÉÏÑ§È¥£¡ss"
@@ -2005,7 +1994,7 @@ ELSE
 END IF
 END SUB
 
-SUB room10
+SUB room2
 mapname = "½ÌÊÒÖÐ"
 whichhouse = 2
 IF loadxy THEN mx = 12: my = 2 ELSE mx = 12: my = 2
@@ -2020,7 +2009,7 @@ m(8) = "wwwwwwwwwwwww00"
 IF action(1) THEN
 l(6) = 5: start(6) = 1        'l(n)=lengh    start-- start from where
 s(1) = manname + "£ºÀÏÊ¦£¬ÌýËµÄÇ¸öÈë¿ÚÊÇÍ¨Íù~~ÁíÒ»¸öÊÀ½ç``µÄÍ¨µÀ£¬ÊÇÂð£¿ss"
-s(2) = "ÀÏÊ¦£º^#@÷&$#x(&^%ss"
+s(2) = "ÀÏÊ¦£º^#@?$#x(&^%ss"
 s(3) = "ÀÏÊ¦£ºÎÒ²»Ïë»Ø´ðÄãµÄÎÊÌâ¡£¶àÉÙÄêÀ´£¬ÄÇ¸öÈë¿Ú²»Öª³öÏÖ¹ý¶àÉÙ»Ø£¬"
 s(4) = "      ``µ«´ÓÃ»ÓÐÈË¸Ò½øÈëÆäÖÐ¡£Ç§Íò±ðµ½ÄÇÀïÈ¥£¡ss"
 s(5) = manname + "£ºÄÇÃ´¿ÉÅÂ....²»¹ýÎÒ²»ÅÂ¡£ss"
@@ -2069,169 +2058,6 @@ IF NOT action(1) THEN
     loadxy = false
     into = false
 END IF
-END SUB
-
-SUB room11
-toward = "up"
-mapname = "¹ùÎ¡¼ÒÖÐ"
-mx = 8: my = 7
-m(1) = "wwwwwwwwwwwwwww"
-m(2) = "w   w         w"
-m(3) = "w   www       w"
-m(4) = "www           w"
-m(5) = "w    w   w  www"
-m(6) = "w    w   w    w"
-m(7) = "w    w   w    w"
-m(8) = "wwwwwwwoowwwwww"
-   l(2) = 0: start(2) = 1
-   s(1) = manname + "£ºº«¼ÑÀï£¡×ß£¬ÉÏÑ§È¥£¡ss"
-
-END SUB
-
-SUB room12
-toward = "up"
-mapname = "¹ùÎ¡¼ÒÖÐ"
-mx = 8: my = 7
-m(1) = "wwwwwwwwwwwwwww"
-m(2) = "w   w   w     w"
-m(3) = "w wwwww wwwww w"
-m(4) = "www           w"
-m(5) = "w w  ww ww  www"
-m(6) = "w w  w   ww   w"
-m(7) = "w    w   w    w"
-m(8) = "wwwwwwwowwwwwww"
-o(1) = "000000000000000"
-o(2) = "0000j0000000000"
-o(3) = "000000000000000"
-o(4) = "000000000000000"
-o(5) = "000000000000000"
-o(6) = "000000000000000"
-o(7) = "000000000000000"
-o(8) = "000000000000000"
-  
-   l(2) = 0: start(2) = 1
-   s(1) = manname + "£ºº«¼ÑÀï£¡×ß£¬ÉÏÑ§È¥£¡ss"
-
-END SUB
-
-SUB room13
-toward = "up"
-mapname = "¹ùÎ¡¼ÒÖÐ"
-mx = 8: my = 7
-m(1) = "wwwwwwwwwwwwwww"
-m(2) = "w   w         w"
-m(3) = "w   www       w"
-m(4) = "w w           w"
-m(5) = "w    w   w  www"
-m(6) = "w    w   w    w"
-m(7) = "w    w   w    w"
-m(8) = "wwwwwwwoowwwwww"
-   l(2) = 0: start(2) = 1
-   s(1) = manname + "£ºº«¼ÑÀï£¡×ß£¬ÉÏÑ§È¥£¡ss"
-
-END SUB
-
-SUB room14
-toward = "up"
-mapname = "¼Ò¾ßµê"
-mx = 8: my = 7
-m(1) = "wwwwwwwwwwwwwww"
-m(2) = "wdddddddddddddw"
-m(3) = "wdddddddddddddw"
-m(4) = "wdddddddddddddw"
-m(5) = "wdddddddddddddw"
-m(6) = "wdddddddddddddw"
-m(7) = "wwwwww   1wwwww"
-m(8) = "wwwwwwoooowwwww"
-   l(1) = 3: start(1) = 1
-   s(1) = manname + "£ºÄãÃÇµêÀïÔõÃ´Ö»ÓÐÒÎ×Ó£¿ss"
-   s(2) = "ÀÏ°å£ºÕâÓÎÏ·µÄÃÀ¹¤¾Í»á»­Õâ¸ö¡£ss"
-   s(3) = "ÀÏ°å£º»¹°ÑÎÒ»­µÃÕâÃ´´ô¡£ss"
-   s(4) = manname + "£ºàÅ£¬¿´µÃ³öÀ´£¬ÄãºÍ¹ùÎ¡³¤µÃÒ»Ä£Ò»Ñù¡£ss"
-END SUB
-
-SUB room2
-toward = "up"
-mapname = manname + "¼ÒÖÐ"
-mx = 8: my = 7
-m(1) = "wwwwwwwwwwwwwww"
-m(2) = "w   d      d  w"
-m(3) = "w             w"
-m(4) = "w             w"
-m(5) = "w             w"
-m(6) = "w             w"
-m(7) = "w             w"
-m(8) = "wwwwwwwoowwwwww"
-   l(2) = 0: start(2) = 1
-   s(1) = manname + "£ºº«¼ÑÀï£¡×ß£¬ÉÏÑ§È¥£¡ss"
-END SUB
-
-SUB room3
-toward = "up"
-mapname = "ÆÆÀÃÒ»¼ä·¿"
-mx = 8: my = 7
-m(1) = "wwwwwwwwwwwwwww"
-m(2) = "w             w"
-m(3) = "w             w"
-m(4) = "w             w"
-m(5) = "w             w"
-m(6) = "w             w"
-m(7) = "w             w"
-m(8) = "wwwwwwwoowwwwww"
-   l(2) = 0: start(2) = 1
-   s(1) = manname + "£ºº«¼ÑÀï£¡×ß£¬ÉÏÑ§È¥£¡ss"
-
-END SUB
-
-SUB room31
-toward = "up"
-mapname = "Ë¯ÏÉ¼ÒÖÐ"
-mx = 8: my = 7
-m(1) = "wwwwwwwwwwwwwww"
-m(2) = "w   w         w"
-m(3) = "w   www       w"
-m(4) = "w w           w"
-m(5) = "w    w   w  www"
-m(6) = "w    w   w    w"
-m(7) = "w    w   w    w"
-m(8) = "wwwwwwwoowwwwww"
-   l(2) = 0: start(2) = 1
-   s(1) = manname + "£ºº«¼ÑÀï£¡×ß£¬ÉÏÑ§È¥£¡ss"
-
-END SUB
-
-SUB room4
-toward = "up"
-mapname = "CCTV"
-mx = 8: my = 7
-m(1) = "wwwwwwwwwwwwwww"
-m(2) = "w     dd      w"
-m(3) = "w             w"
-m(4) = "w  dddddddd   w"
-m(5) = "w             w"
-m(6) = "w  dddddddd   w"
-m(7) = "w             w"
-m(8) = "wwwwwwwoowwwwww"
-   l(2) = 0: start(2) = 1
-   s(1) = manname + "£ºº«¼ÑÀï£¡×ß£¬ÉÏÑ§È¥£¡ss"
-
-END SUB
-
-SUB room5
-toward = "up"
-mapname = "¹ùÎ¡¼ÒÖÐ"
-mx = 8: my = 7
-m(1) = "wwwwwwwwwwwwwww"
-m(2) = "w   w         w"
-m(3) = "w   www       w"
-m(4) = "w w           w"
-m(5) = "w    w   w  www"
-m(6) = "w    w   w    w"
-m(7) = "w    w   w    w"
-m(8) = "wwwwwwwoowwwwww"
-   l(2) = 0: start(2) = 1
-   s(1) = manname + "£ºº«¼ÑÀï£¡×ß£¬ÉÏÑ§È¥£¡ss"
-
 END SUB
 
 SUB room9
@@ -2410,12 +2236,12 @@ RETURN
     
 END SUB
 
-SUB whitesay (say$) 'ÅÔ°×
-sayl = LEN(say$)
+SUB whitesay (say AS STRING)  'ÅÔ°×
+sayl = LEN(say)
 VIEW PRINT 20 TO 23
 LOCATE 21, 40 - sayl / 2
 FOR i = 1 TO sayl - 1 STEP 2
-    k$ = MID$(say$, i, 2)
+    k$ = MID$(say, i, 2)
     PRINT k$;
     'FOR tmp = 0 TO 15000: NEXT       'sayspeed
     t = TIMER
