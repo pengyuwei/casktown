@@ -1,10 +1,11 @@
-'Don't remove these rem line..................................................
-'ALT-X to quit game
-'Download from http://toyshop.cc.st
-'E-mail:toyclub@sina.com
-'Produce by FFB
-'Copyright 1998-2000
-'..............................................................................
+DECLARE SUB room31 ()
+DECLARE SUB room11 ()
+DECLARE SUB room12 ()
+DECLARE SUB room13 ()
+DECLARE SUB room14 ()
+DECLARE SUB room5 ()
+DECLARE SUB room3 ()
+DECLARE SUB room4 ()
 DECLARE SUB clr ()
 DECLARE SUB whitesay (say$)
 DECLARE SUB LoadGame (x!, y!, mx!, my!, autotime!, runstep!)
@@ -27,7 +28,7 @@ DECLARE SUB debug ()
 DECLARE SUB pal ()
 DECLARE SUB room2 ()
 DECLARE SUB readmap (a)
-DECLARE SUB readhouse ()
+DECLARE SUB readhouse (x AS INTEGER)
 DECLARE SUB map5 ()
 DECLARE SUB room1 ()
 DECLARE SUB map4 ()
@@ -56,9 +57,9 @@ DIM SHARED people1(246)
 DIM SHARED people2(4 + INT((40 * 1 + 7) / 8) * 40 * 4)
 DIM SHARED people3(4 + INT((40 * 1 + 7) / 8) * 40 * 4)
 DIM SHARED people4(4 + INT((40 * 1 + 7) / 8) * 40 * 4)
-DIM SHARED people5(4 + INT((40 * 1 + 7) / 8) * 40 * 4)
-DIM SHARED people6(4 + INT((40 * 1 + 7) / 8) * 40 * 4)
-DIM SHARED people9(4 + INT((40 * 1 + 7) / 8) * 40 * 4)
+DIM SHARED people5(4 + INT((40 * 1 + 7) / 8) * 40 * 4)   '睡仙
+DIM SHARED people6(4 + INT((40 * 1 + 7) / 8) * 40 * 4)   'teacher
+DIM SHARED people9(4 + INT((40 * 1 + 7) / 8) * 40 * 4)   'pal-main
 DIM SHARED space(4 + INT((40 * 1 + 7) / 8) * 40 * 4)
 
 DIM SHARED tree(4 + INT((40 * 1 + 7) / 8) * 40 * 4)
@@ -85,12 +86,12 @@ DIM SHARED up$
 DIM SHARED down$
 DIM SHARED lef$
 DIM SHARED righ$
-DIM SHARED in AS STRING
-DIM SHARED into AS INTEGER
-DIM SHARED whichhouse
+DIM SHARED in AS STRING           'inkey$
+DIM SHARED into AS INTEGER        'true--in the house  else out of house
+DIM SHARED whichhouse AS INTEGER
 DIM SHARED loadxy AS INTEGER
 DIM SHARED manname AS STRING
-DIM SHARED display AS INTEGER
+DIM SHARED display AS INTEGER 'display the map name
 DIM SHARED nextmap AS INTEGER
 DIM SHARED x, y, mx, my
 DIM SHARED say AS INTEGER
@@ -99,7 +100,7 @@ DIM SHARED who AS INTEGER
 DIM SHARED map AS INTEGER
 DIM SHARED mapname AS STRING
 DIM SHARED retn AS INTEGER, retn1 AS INTEGER
-DIM SHARED maythough(9) AS STRING
+DIM SHARED maythough(19) AS STRING
 DIM SHARED find AS INTEGER
 DIM SHARED Search AS STRING
 DIM SHARED active AS INTEGER
@@ -113,14 +114,17 @@ maythough(6) = "E"
 maythough(7) = "G"
 maythough(8) = "g"
 maythough(9) = "R"
-CONST total = 9
+maythough(10) = " "
+maythough(11) = "$"
+maythough(12) = "!"
+CONST total = 12
 CONST false = 0
 CONST true = -1
 loadxy = true
 retn = 0
 up$ = CHR$(0) + CHR$(72): down$ = CHR$(0) + CHR$(80)
 lef$ = CHR$(0) + CHR$(75): righ$ = CHR$(0) + CHR$(77)
-shot$ = CHR$(0) + CHR$(42)
+shot$ = CHR$(0) + CHR$(42)      'right shift
 man$ = CHR$(1)
 everystep = 10
 map = 1
@@ -129,11 +133,12 @@ CLS
 map1
 drawmap
 mx = 2: my = 3
-x = mx * 40 - 40: y = my * 40 - 40
+x = mx * 40 - 40: y = my * 40 - 40          'is important
 who = 1
 PUT (x + 1, y + 1), man4
 wartime = TIMER
 into = true
+'map = 3'''
 runstep = false            'run step by step
 autotime = TIMER
 DO
@@ -143,7 +148,10 @@ IF TIMER - autotime > 2 THEN CALL autorun: autotime = TIMER
 IF in = "S" AND into = true THEN SaveGame x, y, mx, my, autotime, runstep
 IF in = "L" THEN GOSUB LoadGame
 IF in = CHR$(0) + CHR$(45) OR in = CHR$(0) + CHR$(68) THEN END
+IF in = "5" THEN drawmap
 IF in = up$ THEN
+   'IF toward = "up" THEN
+   'PUT (x + 1, y + 1), man1, PSET
    toward = "up"
    IF NOT object AND my > 1 THEN
       IF runstep THEN
@@ -160,12 +168,14 @@ IF in = up$ THEN
       PUT (x + 1, y + 1), man1
    END IF
    say = 0
-   
+   'ELSE
    toward = "up"
    PUT (x + 1, y + 1), man1, PSET
-   
+   'END IF
 END IF
 IF in = down$ THEN
+   'IF toward = "down" THEN
+   'PUT (x + 1, y + 1), man2, PSET
    toward = "down"
    IF NOT object AND my < 8 THEN
       IF runstep THEN
@@ -182,12 +192,14 @@ IF in = down$ THEN
       PUT (x + 1, y + 1), man2
    END IF
    say = 0
-   
+   'ELSE
    toward = "down"
    PUT (x + 1, y + 1), man2, PSET
-   
+   'END IF
 END IF
 IF in = lef$ THEN
+   'IF toward = "left" THEN
+   'PUT (x + 1, y + 1), Man3, PSET
    toward = "left"
    IF NOT object AND mx > 1 THEN
       IF runstep THEN
@@ -204,12 +216,14 @@ IF in = lef$ THEN
       PUT (x + 1, y + 1), man3
    END IF
    say = 0
-   
+   'ELSE
    toward = "left"
    PUT (x + 1, y + 1), man3, PSET
-   
+   'END IF
 END IF
 IF in = righ$ THEN
+   'IF toward = "right" THEN
+   'PUT (x + 1, y + 1), man4, PSET
    toward = "right"
    IF NOT object AND mx < 15 THEN
       IF runstep THEN
@@ -226,10 +240,10 @@ IF in = righ$ THEN
       PUT (x + 1, y + 1), man4
    END IF
    say = 0
-  
+   'ELSE
    toward = "right"
    PUT (x + 1, y + 1), man4, PSET
-   
+   'END IF
 END IF
 
 
@@ -238,22 +252,17 @@ IF in = " " OR in = "z" OR in = CHR$(13) THEN
    IF NOT say THEN IF find THEN findsth
    IF say THEN rpgsay
 END IF
-IF LCASE$(MID$(m(my), mx, 1)) = "i" THEN
-   clcon
-   loadxy = false
-   IF into THEN
+IF LCASE$(MID$(o(my), mx, 1)) >= "1" OR LCASE$(MID$(o(my), mx, 1)) >= "9" THEN
+      clcon                                    'in which room
       mx0 = mx: my0 = my + 1
-      readhouse
+      readhouse whichhouse + VAL(LCASE$(MID$(o(my), mx, 1))) - 1
       drawmap
-      into = NOT into
-    ELSE
+END IF
+IF LCASE$(MID$(m(my), mx, 1)) = "o" THEN       'out of room
        readmap (map)
        mx = mx0: my = my0
        drawmap
-       into = true
-   END IF
 END IF
-
 IF LCASE$(MID$(m(my), mx, 1)) = "e" THEN
    CALL clcon
    IF MID$(m(my), mx, 1) = "e" THEN map = map + 1: retn = false ELSE map = map - 1: retn = true
@@ -283,6 +292,8 @@ END IF
 IF MID$(m(my), mx, 1) = "F" THEN endgame
 pal
 'debug
+'action(1) = -1
+'action(2) = -1
 LOOP
 
 LoadGame:
@@ -299,7 +310,7 @@ CLOSE
 display = false
 tempx = x: tempy = y
 tempmx = mx: tempmy = my
-
+'IF nextmap <> 0 THEN readmap (nextmap) ELSE readmap (map)
 readmap (map)
 x = tempx: y = tempy
 mx = tempmx: my = tempmy
@@ -323,6 +334,8 @@ CASE "down"
          WHILE TIMER - t < .3: WEND
      NEXT
      PUT (x + 1, y + 1), autoMan1, PSET
+     't = TIMER
+     'WHILE TIMER - t < 1: WEND
 CASE "left"
      FOR i = 1 TO 2
          PUT (x + 1, y + 1), autoMan3, PSET
@@ -401,6 +414,8 @@ FOR i = 45 TO 0 STEP -1
 NEXT
 
 CLS
+'LINE (1, 1)-(599, 319), 0, BF
+'LINE (639, 479)-(0, 319), 15, BF
 FOR i = 0 TO 30
     PALETTE 0, 65536 * i + 256 * i + i
     t = TIMER
@@ -463,15 +478,13 @@ LOCATE 21, 1: PRINT "Nextmap="; nextmap
 END SUB
 
 SUB drawmap '--------------dim man(4 + INT((x*1 + 7) / 8) * y * 4) when screen 12
-FOR cx = 0 TO 600 STEP 40
-'    LINE (cx, 0)-(cx, 320), 3
-NEXT
-FOR cy = 0 TO 320 STEP 40
-'    LINE (0, cy)-(600, cy), 3
-NEXT
 COLOR 3
 LINE (0, 0)-(600, 320), 1, B
-FOR i = 1 TO 15
+FOR i = 15 TO 1 STEP -1
+    FOR dy = 8 TO 1 STEP -1
+        dmx = i * 40 - 40: dmy = dy * 40 - 40
+        PUT (dmx, dmy), space, PSET
+    NEXT
     FOR dy = 8 TO 1 STEP -1
         m$ = MID$(m(dy), i, 1)
         dmx = i * 40 - 40: dmy = dy * 40 - 40
@@ -513,9 +526,8 @@ FOR i = 1 TO 15
         PUT (dmx + 1, dmy + 1), house4, PSET
         CASE "%"
         PUT (dmx + 1, dmy + 1), house5, PSET
-        CASE "0", "i", "z", "e", "g", "r", "f"
+        CASE "0", "i", "z", "e", "g", "r", "f", " ", "o"
         PUT (dmx, dmy), space, PSET
-       
         CASE ELSE
         END SELECT
     LINE (0, 0)-(600, 320), 1, B
@@ -525,13 +537,13 @@ NEXT
 x = mx * 40 - 40: y = my * 40 - 40
 SELECT CASE toward
 CASE "up"
-   PUT (x + 1, y + 1), man1, PSET
+   PUT (x + 1, y + 1), man1, PSET': PUT (x + 1, y + 1), man1, XOR
 CASE "down"
-   PUT (x + 1, y + 1), man2, PSET
+   PUT (x + 1, y + 1), man2, PSET': PUT (x + 1, y + 1), man2
 CASE "left"
-   PUT (x + 1, y + 1), man3, PSET
+   PUT (x + 1, y + 1), man3, PSET': PUT (x + 1, y + 1), man3
 CASE "right"
-   PUT (x + 1, y + 1), man4, PSET
+   PUT (x + 1, y + 1), man4, PSET': PUT (x + 1, y + 1), man4
 CASE ELSE
 END SELECT
 LINE (0, 0)-(600, 320), 1, B
@@ -545,7 +557,7 @@ FOR saybox = 225 TO 500
     LINE (saybox, 370)-(500 - saybox, 370), 1, B
     LINE (saybox, 400)-(500 - saybox, 400), 1, B
 NEXT
-
+'LINE (50, 370)-(500, 400), 1, B'
 LOCATE 22, 30
 PRINT mapname
 clk
@@ -560,7 +572,7 @@ FOR saybox = 500 TO 225 STEP -1
     LINE (saybox, 400)-(500 - saybox, 400), 1, B
 NEXT
 LINE (50, 370)-(500, 400), 0, BF
-
+'drawscore
 END SUB
 
 SUB drawscore
@@ -568,6 +580,12 @@ VIEW PRINT
 COLOR 5
 LINE (0, 0)-(520, 320), , B
 
+'FOR i = o TO 520 STEP 40
+'    LINE (i, 0)-(i, 320)
+'NEXT
+'FOR i = 0 TO 320 STEP 40
+'    LINE (0, i)-(520, i)
+'NEXT
 
 COLOR 2
 LOCATE 1, 68
@@ -605,15 +623,15 @@ pal
 clcon
 COLOR 4
 LOCATE 17, 15
-PRINT "联系地址 : 100083 北京科技大学8712信箱 98-3班  FFB收"
+PRINT "联系地址 : 100083 北京科技大学8712信箱 98-3班  P.Y.W.收"
 LOCATE 18, 15
 PRINT "TEL      : (010) 62394625"
 LOCATE 19, 15
-PRINT "E-mail   : Toyclub@sina.com"
+PRINT "E-mail   : Toyshop@263.net"
 pal
 COLOR 15
 LOCATE 11, 15
-PRINT "内部测试版  V56.8F"
+PRINT "内部测试版  V56.9"
 
 COLOR 13
 LOCATE 14, 15
@@ -652,11 +670,16 @@ PALETTE 15, 0
 PALETTE 13, 0
 COLOR 3
 cc = 10
+'t
 LINE (43, 71)-(73, 77), cc, BF
 LINE (53, 77)-(63, 105), cc, BF
+'o
+'LOCATE 12, 12: PRINT "o"
 FOR i = 5 TO 15
 CIRCLE (91, 93), i, cc, , , 1.3
+'CIRCLE (91, 93), 5, cc, , , 1.3
 NEXT
+'y
 LINE (109, 80)-(118, 80), cc
 LINE (109, 80)-(118, 105), cc
 LINE (118, 105)-(110, 124), cc
@@ -666,15 +689,22 @@ LINE (128, 80)-(137, 80), cc
 LINE (137, 80)-(119, 124), cc
 LINE (119, 124)-(110, 124), cc
 PAINT (111, 81), cc
+'s
+'LOCATE 12, 20: PRINT "s"
 LINE (140, 80)-(165, 106), cc, BF
 LINE (149, 85)-(165, 90), 0, BF
 LINE (140, 96)-(158, 100), 0, BF
+'h
 LINE (171, 65)-(178, 105), cc, BF
 LINE (171, 82)-(195, 88), cc, BF
 LINE (188, 88)-(195, 105), cc, BF
+'o
+'LOCATE 12, 28: PRINT "o"
 FOR i = 5 TO 15
 CIRCLE (217, 93), i, cc, , , 1.3
+'CIRCLE (217, 93), 5, cc, , , 1.3
 NEXT
+'p
 LINE (238, 80)-(265, 105), cc, BF
 LINE (238, 80)-(245, 124), cc, BF
 
@@ -682,11 +712,11 @@ LINE (245, 87)-(258, 98), 0, BF
 LINE (45, 125)-(259, 145), cc, BF
 LOCATE 8, 7: COLOR 10: PRINT "s    t    u    d    i    o"
 LOCATE 9, 35: PRINT "PRESENT"
-LOCATE 19, 50: PRINT "    ART : Robing"
-LOCATE 20, 50: PRINT "Program : FFB"
+LOCATE 19, 50: PRINT "    ART : G.W."
+LOCATE 20, 50: PRINT "Program : P.Y.W.(SEA)"
 LOCATE 21, 50: PRINT "   Main : 1998.11-1999.2"
-LOCATE 22, 48: PRINT "最后修改于1999年08月17日."
-LOCATE 23, 48: PRINT " Homepage:toyshop.cc.st"
+LOCATE 22, 48: PRINT "最后修改于1999年08月21日00:24."
+
 FOR toyi = 1 TO 42
     PALETTE 15, 65535 * toyi + 256 * toyi + toyi
     IF INKEY$ <> "" THEN toyi = 40
@@ -718,9 +748,9 @@ END SUB
 SUB initstore
 addjin = 20
 jin = 1
-KEY 1, CHR$(27) + "令糊冲"
-KEY 2, CHR$(27) + "郭进"
-KEY 3, CHR$(27) + "张无及"
+KEY 1, CHR$(27) + "马宇驰"
+KEY 2, CHR$(27) + "曾昕宗"
+KEY 3, CHR$(27) + "韩佳里"
 KEY 4, CHR$(27) + "李洪志"
 KEY 5, CHR$(27) + "希特勒"
 KEY 6, CHR$(27) + "韦小宝"
@@ -759,13 +789,22 @@ FOR i = 1 TO 15
     PALETTE i, 0
 NEXT
 display = true
-COLOR 14
+COLOR 14    'name color
 FOR i = 1 TO 99
-    action(i) = false
-    act(i) = false
+    action(i) = false             '未发生  事件
+    act(i) = false             '未发生   对话etc.
 NEXT
 
+'   FOR cx = 0 TO 600 STEP 40
+'       LINE (cx, 0)-(cx, 320), 3
+'   NEXT
+'   FOR cy = 0 TO 320 STEP 40
+'       LINE (0, cy)-(600, cy), 3
+'   NEXT
+
+'map=15x8     box=40x40
 COLOR 14
+'----------------------------------------------------men4
 jin = jin + addjin: GOSUB add
 FOR i = 10 TO 25: CIRCLE (20, 10), i, 6: NEXT
 FOR i = 10 TO 23: CIRCLE (20, 12), i, 6: NEXT
@@ -794,6 +833,7 @@ GET (1, 1)-(39, 39), man4
 LINE (25, 18)-(26, 19), 7, B
 LINE (24, 19)-(27, 19), 0, B
 GET (1, 1)-(39, 39), autoMan4
+'----------------------------------------------------men3
 jin = jin + addjin: GOSUB add
 FOR i = 10 TO 25: CIRCLE (20, 10), i, 6: NEXT
 FOR i = 10 TO 23: CIRCLE (20, 12), i, 6: NEXT
@@ -824,6 +864,7 @@ LINE (13, 18)-(14, 19), 7, B
 LINE (12, 19)-(15, 19), 0, B
 GET (1, 1)-(39, 39), autoMan3
 IF pause THEN a$ = INPUT$(1)
+'----------------------------------------------------men1
 jin = jin + addjin: GOSUB add
 FOR i = 10 TO 25: CIRCLE (20, 10), i, 6: NEXT
 FOR i = 10 TO 23: CIRCLE (20, 12), i, 6: NEXT
@@ -844,6 +885,7 @@ CIRCLE (7, 27), 2, 7: CIRCLE (33, 27), 2, 7
 CIRCLE (15, 36), 1, 7: CIRCLE (25, 36), 1, 7
 GET (1, 1)-(39, 39), man1
 IF pause THEN a$ = INPUT$(1)
+'----------------------------------------------------men2
 jin = jin + addjin: GOSUB add
 FOR i = 10 TO 25: CIRCLE (20, 10), i, 6: NEXT
 FOR i = 10 TO 23: CIRCLE (20, 12), i, 6: NEXT
@@ -900,9 +942,10 @@ LINE (13, 1)-(23, 1), c
 PSET (18, 6), c
 CIRCLE (20, 4), 1, c
 CIRCLE (16, 4), 1, c
-GET (1, 1)-(39, 39), people1
+GET (1, 1)-(39, 39), people1                      'people 1
 jin = jin + addjin: GOSUB add
 PUT (1, 1), people1
+'LOCATE 2, 1: PRINT "郭 巍"
 GET (0, 0)-(40, 40), people1
 jin = jin + addjin: GOSUB add
 FOR i = 0 TO 19
@@ -912,9 +955,9 @@ FOR i = 1 TO 5
     CIRCLE (10, 25), i, 1
 NEXT
 LINE (19, 1)-(21, 20), 7, BF
-GET (1, 1)-(39, 39), people2
+GET (1, 1)-(39, 39), people2                           'people2
 jin = jin + addjin: GOSUB add
-LOCATE 2, 1: PRINT "平 之"
+LOCATE 2, 1: PRINT "顾 鹏"
 CIRCLE (20, 20), 19, 6
 FOR i = 1 TO 5
     CIRCLE (30, 15), i, 2
@@ -925,8 +968,8 @@ NEXT
 
 GET (1, 1)-(39, 39), people3
 IF pause THEN a$ = INPUT$(1)
-jin = jin + addjin: GOSUB add
-LOCATE 2, 1: PRINT "名 予"
+jin = jin + addjin: GOSUB add       '                                马松
+LOCATE 2, 1: PRINT "马 松"
 CIRCLE (20, 20), 19, 14
 FOR i = 1 TO 5
     CIRCLE (30, 15), i, 9
@@ -934,9 +977,10 @@ NEXT
 FOR i = 1 TO 5
     CIRCLE (10, 15), i, 9
 NEXT
-GET (1, 1)-(39, 39), people4
+GET (1, 1)-(39, 39), people4   '          马松
 IF pause THEN a$ = INPUT$(1)
 jin = jin + addjin: GOSUB add
+'                                                            仙人
 FOR i = 1 TO 10
     CIRCLE (20, 43), i, 10
 NEXT
@@ -962,8 +1006,9 @@ CIRCLE (25, 28), 3, 0
 FOR i = 1 TO 2
     CIRCLE (25, 28), i, 10
 NEXT
-GET (1, 1)-(39, 39), people5
+GET (1, 1)-(39, 39), people5                             'people5
 IF pause THEN a$ = INPUT$(1)
+'----------------------------------------------------people6
 jin = jin + addjin: GOSUB add
 LINE (8, 11)-(32, 30), 5, BF: LINE (2, 11)-(8, 26), 12, BF: LINE (32, 11)-(38, 26), 12, BF
 LINE (5, 27)-(8, 31), 6, BF: LINE (35, 27)-(32, 31), 6, BF: LINE (10, 31)-(18, 35), 4, BF
@@ -974,7 +1019,7 @@ NEXT
 FOR i = 1 TO 8
     CIRCLE (20, 11), i, 0
 NEXT
-GET (1, 1)-(39, 39), people6
+GET (1, 1)-(39, 39), people6                      'people6
 IF pause THEN a$ = INPUT$(1)
 jin = jin + addjin: GOSUB add
 CIRCLE (6, 10), 5, 7: CIRCLE (34, 10), 5, 7
@@ -1000,19 +1045,28 @@ LINE (16, 18)-(17, 18), 0: LINE (24, 18)-(25, 18), 0
 PSET (17, 19), 0: PSET (25, 19), 0
 LINE (16, 19)-(16, 18), 0: LINE (24, 19)-(25, 18), 0
 CIRCLE (20, 23), 2, 0: LINE (18, 21)-(22, 23), 7, BF
-GET (1, 1)-(39, 39), people9
+GET (1, 1)-(39, 39), people9                                'people9
 jin = jin + addjin: GOSUB add
+'CIRCLE (20, 20), 19, 7
 CIRCLE (20, 15), 10, 2, , , .6
 CIRCLE (20, 26), 15, 2, , , .4
 LINE (20, 15)-(20, 39), 2
-GET (1, 1)-(39, 39), tree
+GET (1, 1)-(39, 39), tree                              'tree
 IF pause THEN a$ = INPUT$(1)
+
+'jin=jin+addjin:gosub add
+'LOCATE 2, 2: PRINT CHR$(29)
+'INE (1, 1)-(39, 39), 2, B
+'INE (4, 4)-(35, 35), 2, B
+'IRCLE (10, 20), 3, 5
+'IF pause THEN a$ = INPUT$(1)
+'GET (1, 1)-(39, 39), door
 
 jin = jin + addjin: GOSUB add
 FOR i = 5 TO 15 STEP 3
 CIRCLE (20, 20), i, 14
 NEXT
-GET (1, 1)-(39, 39), myst
+GET (1, 1)-(39, 39), myst                               'myst
 jin = jin + addjin: GOSUB add
 diskc = 2
 LINE (9, 21)-(13, 32), diskc, B
@@ -1020,9 +1074,12 @@ LINE (13, 28)-(16, 20), diskc, B
 LINE (25, 20)-(29, 32), diskc, B
 LINE (29, 20)-(31, 29), diskc, B
 LINE (5, 6)-(35, 20), diskc, BF
-GET (1, 1)-(39, 39), disk
+GET (1, 1)-(39, 39), disk                         'disk
+'END
 IF pause THEN a$ = INPUT$(1)
 jin = jin + addjin: GOSUB add
+'wallc = 4    'back color
+'wallcl = 8   'line color
 wallc = 2
 wallcl = 4
 
@@ -1031,8 +1088,8 @@ wallcl = 4
 
 
 LINE (1, 1)-(38, 20), wallc, BF
-LINE (1, 6)-(39, 6), wallcl
-LINE (1, 13)-(39, 13), wallcl
+LINE (1, 6)-(39, 6), wallcl         '横线
+LINE (1, 13)-(39, 13), wallcl       '横线
 LINE (2, 6)-(2, 13), wallcl
 LINE (11, 1)-(11, 6), wallcl
 LINE (11, 13)-(11, 20), wallcl
@@ -1046,30 +1103,31 @@ PUT (1, 27), wall, PSET
 GET (1, 1)-(39, 39), wall
 IF pause THEN a$ = INPUT$(1)
 jin = jin + addjin: GOSUB add
-LINE (2, 40)-(20, 10), 2
+LINE (2, 40)-(20, 10), 2     '/
 IF pause THEN a$ = INPUT$(1)
-LINE -STEP(40, 0), 2
+LINE -STEP(40, 0), 2          '--
 IF pause THEN a$ = INPUT$(1)
-LINE (78, 40)-(60, 10), 2
+LINE (78, 40)-(60, 10), 2      '\
 IF pause THEN a$ = INPUT$(1)
-LINE (78, 40)-(2, 40), 2
+LINE (78, 40)-(2, 40), 2       '-----
 IF pause THEN a$ = INPUT$(1)
-LINE (12, 40)-(70, 70), 2, BF
+LINE (12, 40)-(70, 70), 2, BF  'box
 IF pause THEN a$ = INPUT$(1)
-LINE (24, 10)-(34, 4), 2, B
+LINE (24, 10)-(34, 4), 2, B 'yan
 IF pause THEN a$ = INPUT$(1)
-LINE (15, 69)-(30, 45), 0, BF
+LINE (15, 69)-(30, 45), 0, BF   'door
 IF pause THEN a$ = INPUT$(1)
-CIRCLE (18, 57), 1, 2
+CIRCLE (18, 57), 1, 2           'lock
 IF pause THEN a$ = INPUT$(1)
-LINE (40, 60)-(62, 47), 0, BF
+LINE (40, 60)-(62, 47), 0, BF   'windows
 IF pause THEN a$ = INPUT$(1)
-LINE (45, 56)-(47, 50), 1
+LINE (45, 56)-(47, 50), 1     '|light
 IF pause THEN a$ = INPUT$(1)
-LINE (52, 56)-(54, 50), 1
+LINE (52, 56)-(54, 50), 1     '|
 IF pause THEN a$ = INPUT$(1)
 GET (1, 1)-(79, 79), house
 IF pause THEN a$ = INPUT$(1)
+'=--------------------------------------yun
 jin = jin + addjin: GOSUB add
 FOR i = 1 TO 10
     CIRCLE (12, 25), i, 7
@@ -1085,6 +1143,7 @@ FOR i = 1 TO 10
 NEXT
 GET (1, 1)-(39, 39), yun
 IF pause THEN a$ = INPUT$(1)
+'--------------------------------------------------tree
 jin = jin + addjin: GOSUB add
 FOR i = 1 TO 5
     CIRCLE (20, 10), i, 2: CIRCLE (15, 15), i, 2: CIRCLE (25, 15), i, 2
@@ -1097,6 +1156,7 @@ FOR i = 1 TO 5
 NEXT
 IF pause THEN a$ = INPUT$(1)
 GET (0, 0)-(40, 40), tree
+'------------------------------------------------house1
 jin = jin + addjin: GOSUB add
 LINE (5, 5)-(35, 20), 6, BF: LINE (8, 21)-(32, 35), 7, BF
 LINE (10, 23)-(18, 31), 0, BF: LINE (14, 23)-(14, 31), 7
@@ -1110,12 +1170,14 @@ LINE (24, 6)-(29, 16), 7, BF: LINE (23, 6)-(30, 8), 7, BF
 GET (1, 1)-(39, 39), house1
 LOCATE 10, 10: PRINT 1
 IF pause THEN a$ = INPUT$(1)
+'------------------------------------------------house2
 jin = jin + addjin: GOSUB add
 LINE (5, 5)-(35, 20), 6, BF: LINE (8, 21)-(32, 35), 7, BF
 LINE (10, 23)-(18, 31), 0, BF: LINE (14, 23)-(14, 31), 7: LINE (10, 27)-(18, 27), 7
 LINE (24, 27)-(29, 35), 0, BF: LINE (24, 6)-(29, 16), 7, BF: LINE (23, 6)-(30, 8), 7, BF
 GET (0, 0)-(40, 40), house2
 LOCATE 10, 10: PRINT 2
+'------------------------------------------------house3
 IF pause THEN a$ = INPUT$(1)
 jin = jin + addjin: GOSUB add
 LINE (5, 15)-(20, 35), 10, BF: LINE (5, 6)-(20, 14), 10, B
@@ -1134,6 +1196,7 @@ NEXT
 GET (0, 0)-(40, 40), house3
 LOCATE 10, 10: PRINT 3
 IF pause THEN a$ = INPUT$(1)
+'------------------------------------------------house4
 jin = jin + addjin: GOSUB add
 LINE (6, 15)-(15, 8), 6: LINE (6, 25)-(15, 19), 6: LINE (6, 25)-(6, 15), 6
 LINE (15, 8)-(23, 15), 6: LINE (15, 19)-(22, 25), 6: LINE (22, 15)-(35, 15), 6
@@ -1147,6 +1210,7 @@ LINE (37, 5)-(38, 6), 7, B
 GET (1, 1)-(39, 39), house4
 LOCATE 10, 10: PRINT 4
 
+'------------------------------------------------house5
 IF pause THEN a$ = INPUT$(1)
 jin = jin + addjin: GOSUB add
 DIM xxx%(500): DIM yyy%(500)
@@ -1194,7 +1258,7 @@ LINE (46, 379)-(501, 411), 1, B
 COLOR 3
 LOCATE 14, 7: PRINT "Produce with Microsoft Quick Basic 4.0"
 LOCATE 16, 7: PRINT "Toyshop Studio 1997-1999"
-LOCATE 18, 7: PRINT "E-main:Toyclub@sina.com"
+LOCATE 18, 7: PRINT "E-main:Toyshop@263.net"
 LOCATE 20, 7: PRINT "Loading..."
 pal
 IF jin > 450 THEN jin = 450
@@ -1212,23 +1276,23 @@ RETURN
 
 END SUB
 
-SUB map1
-mapname = "木桶小镇"        ' 这里引用大宇公司的<阿猫阿狗>的地名
+SUB map1   '15x8
+mapname = "木桶小镇"
 whichhouse = 1
 IF loadxy THEN IF retn THEN mx = 14: my = 7 ELSE mx = 1: my = 2
-m(1) = "thxt0hxthxhxttt"
-m(2) = "txx00xxtxxxx1tt"
-IF action(1) THEN m(2) = "0xx10xxtxxxx0tt"
-IF action(2) THEN m(2) = "0xx14xxtxxxx0tt"
-m(3) = "0000000000000tt"
-m(4) = "t0t00hx0t0t0ttt"
-m(5) = "t0t00ix0t0t0ttt"
-m(6) = "t0000000000000t"
-m(7) = "hx000tt0ttttt0t"
+m(1) = "thxt hxthxhxttt"
+m(2) = "tix  ixtixix1tt"
+IF action(1) THEN m(2) = " ix1 ixtixix tt"
+IF action(2) THEN m(2) = " ix14ixtixix tt"
+m(3) = "             tt"
+m(4) = "t t  hx t t ttt"
+m(5) = "t t  ix t t ttt"
+m(6) = "t             t"
+m(7) = "hx   tt ttttt t"
 m(8) = "xxtttttttttttet"
 
 o(1) = "000000000000000"
-o(2) = "a20000000000000"
+o(2) = "a20003004050000"
 o(3) = "000000000000000"
 o(4) = "t00000000000000"
 o(5) = "t00001000000000"
@@ -1238,25 +1302,25 @@ o(8) = "t00000000000000"
 
 IF NOT action(1) THEN
    l(1) = 4: start(1) = 14
-   s(14) = manname + "：呀！这不是郭靖吗？"
-   s(15) = "郭靖：那咱们再见吧....我有~~重要``的事情要做，不要打扰我。ss"
+   s(14) = manname + "：呀！这不是郭巍吗？"
+   s(15) = "郭巍：那咱们再见吧....我有~~重要``的事情要做，不要打扰我。ss"
    s(16) = manname + "：......ss"
    s(17) = manname + "：那好吧，我先走了......ss"
    's(18) = manname + "心想：呀，一定是昨天我把他的像皮弄丢了，他生我的气了。ss"
-   s(18) = "郭靖心想：倒霉，偏偏赶上小便时过来。ss"
+   s(18) = "郭巍心想：倒霉，偏偏赶上小便时过来。ss"
 ELSE
    l(1) = 4: start(1) = 1
-   s(1) = "郭靖：" + manname + "，昨天晚上看〈阿拉蕾〉了吗？特好玩。ss"
+   s(1) = "郭巍：" + manname + "，昨天晚上看〈阿拉蕾〉了吗？特好玩。ss"
    s(2) = manname + "：看了，把我乐得肚子直疼。ss"
-   s(3) = "郭靖：对！没错！只不过没看到结尾，电视仿佛受了~~干扰``，"
+   s(3) = "郭巍：对！没错！只不过没看到结尾，电视仿佛受了~~干扰``，"
    s(4) = "      ``全是雪花。ss"
    s(5) = manname + "：我家也是。ss"
 END IF
 
 IF action(2) THEN
    l(4) = 1: start(4) = 10
-   s(10) = manname + "：马名予，你回来了。ss"
-   s(11) = "马名予：我从坡上爬上来了。ss"
+   s(10) = manname + "：马松，你回来了。ss"
+   s(11) = "马松：我从坡上爬上来了。ss"
 END IF
 END SUB
 
@@ -1272,6 +1336,7 @@ m(5) = "y0000000000000y"
 m(6) = "yy000000000y00y"
 m(7) = "y0000y00000000y"
 m(8) = "yyyyyyyyyyyyyyy"
+
 o(1) = "000000000000000"
 o(2) = "000000000000000"
 o(3) = "000000000000000"
@@ -1469,80 +1534,80 @@ END SUB
 
 SUB map2
 mapname = "村外小路"
-whichhouse = 0
+whichhouse = 11
 IF action(1) THEN whichhouse = 9
 IF loadxy THEN IF retn THEN mx = 2: my = 7 ELSE mx = 1: my = 2
 IF retn1 THEN mx = 13: my = 7
 m(1) = "Etttttttttttttt"
-m(2) = "00000000000$!!t"
-m(3) = "t0tt3000000000t"
-IF action(1) THEN m(3) = "t0tt0000000030t"
-m(4) = "t0tttt00ttt00tt"
-m(5) = "t0000000t@tt0tt"
-m(6) = "t0t$tt00ttt00tt"
-m(7) = "t000000000004tt"
-IF action(1) THEN m(7) = "t000000000000tt"
+m(2) = "           $!!t"
+m(3) = "t tt3         t"
+IF action(1) THEN m(3) = "t tt        3 t"
+m(4) = "t tttt  ttt  tt"
+m(5) = "t       t@tt tt"
+m(6) = "t t$tt  ttt  tt"
+m(7) = "t           4tt"
+IF action(1) THEN m(7) = "t            tt"
 m(8) = "tettttttttttttt"
 IF action(1) THEN m(8) = "tettttttttttgtt": nextmap = 8
-o(1) = "000000000000000"
-o(2) = "000000000000000"
+o(1) = "               "
+o(2) = "000000000001230"
 o(3) = "000000000000000"
 o(4) = "000000000000000"
 o(5) = "000000000000000"
-o(6) = "000000000000000"
+o(6) = "000400000000000"
 o(7) = "000000000000000"
 o(8) = "000000000000000"
 
 IF NOT action(1) THEN
    l(3) = 7: start(3) = 1
-   s(1) = "林平之：现代少女不可交，"
+   s(1) = "顾鹏：现代少女不可交，"
    s(2) = "      ``面似桃花心似刀。"
    s(3) = "      ``穷人有志她不爱，ss"
    s(4) = "      ``专爱有钱地位高。ss"
    s(5) = manname + "：啊？ss"
-   s(6) = "      ``林平之，你又失恋了？？ss"
-   s(7) = "林平之：别提了...."
+   s(6) = "      ``顾鹏，你又失恋了？？ss"
+   s(7) = "顾鹏：别提了...."
    s(8) = "      ``还是先添饱肚子再来谈所谓的~~爱情``吧。ss"
 ELSE
    l(3) = 0: start(3) = 1
-   s(1) = "林平之：别打扰我！我正在练二节棍。ss"
+   s(1) = "顾鹏：别打扰我！我正在练二节棍。ss"
 END IF
 
 l(4) = 12: start(4) = 9
-s(9) = manname + "：呀！这不是马名予吗？ss"
-s(10) = "马名予：啊！原来是你呀，" + manname + "。吓了我一跳。"
+s(9) = manname + "：呀！这不是马松吗？ss"
+s(10) = "马松：啊！原来是你呀，" + manname + "。吓了我一跳。"
 s(11) = "      ``来，尝尝我摘的巧克力蛋糕。ss"
 s(12) = manname + "：......"
 s(13) = "      ``嗯。真好吃！。ss"
 s(14) = manname + "：是你家种的蛋糕树吗？ss"
-s(15) = "马名予：不是，是郭靖家的。ss"
+s(15) = "马松：不是，是郭巍家的。ss"
 s(16) = manname + "：......ss"
-s(17) = "      ``原来是郭靖家的。ss"
-s(18) = "      ``马名予，人家辛辛苦苦种的蛋糕树被你吃了，"
+s(17) = "      ``原来是郭巍家的。ss"
+s(18) = "      ``马松，人家辛辛苦苦种的蛋糕树被你吃了，"
 s(19) = manname + "：太不应该了。ss"
-s(20) = "马名予：蛋糕好吃。ss"
+s(20) = "马松：蛋糕好吃。ss"
 s(21) = manname + "：唉....ss"
 IF action(2) THEN
    l(3) = 2: start(3) = 1
-   s(1) = "林平之：别打扰我！我正在练二节棍。ss"
-   s(2) = manname + "：林平之，看见马名予了吗？ss"
-   s(3) = "林平之：刚才见他去木桶镇了。ss"
+   s(1) = "顾鹏：别打扰我！我正在练二节棍。ss"
+   s(2) = manname + "：顾鹏，看见马松了吗？ss"
+   s(3) = "顾鹏：刚才见他去木桶镇了。ss"
 END IF
 END SUB
 
 SUB map3
 mapname = "树林中"
-whichhouse = 0
+whichhouse = 31
 IF loadxy THEN IF retn THEN mx = 14: my = 8 ELSE mx = 1: my = 2
 m(1) = "Etttttttttttttt"
-m(2) = "00000000000000t"
-m(3) = "tttttttttttt00t"
-m(4) = "t0000000000000t"
-m(5) = "t0ttttttttttt0t"
-m(6) = "t0000000000000t"
-m(7) = "t5$tttttttt000t"
-IF action(2) THEN m(7) = "t0$tttttttt000t"
-m(8) = "ttttttttttttt0e"
+m(2) = "              t"
+m(3) = "tttttttttttt  t"
+m(4) = "t             t"
+m(5) = "t ttttttttttttt"
+m(6) = "t             t"
+m(7) = "t5ttttttttt   t"
+IF action(2) THEN m(7) = "t0ttttttttt   t"
+m(8) = "tt$tttttttttt e"
 o(1) = "000000000000000"
 o(2) = "000000000000000"
 o(3) = "000000000000000"
@@ -1644,7 +1709,7 @@ s(8) = "老师：" + manname + "呀，你最进学习可不大努力啊。ss"
 s(9) = "      ``这样下去怎么参加高考呀？ss"
 s(10) = manname + "：啊？我最进努力多了！ss"
 s(11) = manname + "：我每天晚上十点多才睡觉、早上不到七点就起床了。ss"
-s(12) = "老师：是比网霸天努力。ss"
+s(12) = "老师：是比于畅努力。ss"
 s(13) = "      ``那你平时几点睡觉？ss"
 s(14) = manname + "：晚上八点睡觉、早上七点就起床。ss"
 s(15) = "老师：......ss"
@@ -1674,20 +1739,20 @@ o(7) = "000000000000000"
 o(8) = "000000000000000"
 
    l(4) = 6: start(4) = 1
-   s(1) = manname + "：呀！马名予，你怎么跑到这里来了？ss"
-   s(2) = "马名予：我正在摘巧克力蛋糕，忽然看见前面有一棵苹果树，"
+   s(1) = manname + "：呀！马松，你怎么跑到这里来了？ss"
+   s(2) = "马松：我正在摘巧克力蛋糕，忽然看见前面有一棵苹果树，"
    s(3) = "      ``要知道，木桶小镇已经很多年没有苹果树了..ss"
    s(4) = manname + "：然后呢？ss"
-   s(5) = "马名予：我想去摘，可脚下一滑,就掉到这来..ss"
+   s(5) = "马松：我想去摘，可脚下一滑,就掉到这来..ss"
    s(6) = manname + "：我以前怎么没来过这里？？ss"
-   s(7) = "马名予：我们怎么出去呀？？！！ss"
+   s(7) = "马松：我们怎么出去呀？？！！ss"
    into = true
 IF act(2) AND NOT action(2) THEN
    clk
    drawmap
    who = 4
    l(4) = 0: start(4) = 1
-   s(1) = manname + "：嗯？！马名予哪去了？ss"
+   s(1) = manname + "：嗯？！马松哪去了？ss"
    into = true
    clk
    rpgsay
@@ -1812,29 +1877,59 @@ IF TIMER - t < .01 THEN EXIT SUB
 t = TIMER
 IF add = 0 THEN add = -1
 c14 = c14 + add
-IF c14 > 45 OR c14 < 20 THEN add = -add
-PALETTE 14, 65535 * INT(c14) + 256 * INT(c14) + INT(c14)
-
+IF c14 > 55 OR c14 < 20 THEN add = -add
+'PALETTE 14, 65535 * INT(c14) + 256 * INT(c14) + INT(c14)
+PALETTE 14, 65535 * 63 + 256 * c14 + 63
 END SUB
 
-SUB readhouse
-SELECT CASE whichhouse
+SUB readhouse (whichroom AS INTEGER)
+o(1) = "000000000000000"
+o(2) = "000000000000000"
+o(3) = "000000000000000"
+o(4) = "000000000000000"
+o(5) = "000000000000000"
+o(6) = "000000000000000"
+o(7) = "000000000000000"
+o(8) = "000000000000000"
+SELECT CASE whichroom
        CASE 1
-                   CALL room1
+              CALL room1
        CASE 2
-                 CALL room2
+              CALL room2
        CASE 3
-                 'CALL room3
+              CALL room3
        CASE 4
-                 'CALL room4
+              CALL room4
+       CASE 5
+              CALL room5
        CASE 9
-                  CALL room9
+              CALL room9
+       CASE 11
+              CALL room11
+       CASE 12
+              CALL room12
+       CASE 13
+              CALL room13
+       CASE 14
+              CALL room14
+       CASE 31
+              CALL room31
+     
       
        CASE ELSE
 END SELECT
 END SUB
 
 SUB readmap (mm)
+o(1) = "000000000000000"
+o(2) = "000000000000000"
+o(3) = "000000000000000"
+o(4) = "000000000000000"
+o(5) = "000000000000000"
+o(6) = "000000000000000"
+o(7) = "000000000000000"
+o(8) = "000000000000000"
+
 SELECT CASE mm
    CASE 1
          CALL map1
@@ -1872,45 +1967,45 @@ END SUB
 
 SUB room1
 toward = "up"
-mapname = "王不停家中"
+mapname = "韩小里家中"
 mx = 8: my = 7
-m(1) = "000000000000000"
-m(2) = "0wwwwwwwwwwwww0"
-m(3) = "0w00d2w000dd0w0"
-IF action(1) THEN m(3) = "0w00d0w020dd0w0"
-m(4) = "0w0000w000000w0"
-m(5) = "0w00wwwww00www0"
-m(6) = "0w00000000000w0"
-m(7) = "0wwwwww00wwwww0"
-m(8) = "000000ziiz00000"
+m(1) = "               "
+m(2) = " wwwwwwwwwwwww "
+m(3) = " w  d2w   dd w "
+IF action(1) THEN m(3) = " w  d w 2 dd w "
+m(4) = " w    w      w "
+m(5) = " w  wwwww  www "
+m(6) = " w           w "
+m(7) = " wwwwww  wwwww "
+m(8) = "      zooz     "
 IF NOT action(1) THEN
    l(2) = 12: start(2) = 1
-   s(1) = manname + "：王不停！走，上学去！ss"
-   s(2) = "王不停：今天不去了....ss"
+   s(1) = manname + "：韩佳里！走，上学去！ss"
+   s(2) = "韩佳里：今天不去了....ss"
    s(3) = manname + "：......ss"
-   s(4) = "王不停：想起床真是比登天还难。ss"
+   s(4) = "韩佳里：想起床真是比登天还难。ss"
    s(5) = manname + "：我说你还是快起的好，太阳都晒屁股了。ss"
-   s(6) = "王不停：我困死了。ss"
+   s(6) = "韩佳里：我困死了。ss"
    s(7) = manname + "：你怎么那样睡觉，姿势难看死了。ss"
-   s(8) = "王不停：啊！s"
+   s(8) = "韩佳里：啊！s"
    s(9) = "      ~~大梦谁先觉，平生我自知。草堂春睡足，窗外日迟迟``。ss"
    s(10) = "铛！"
    s(11) = "...."
-   s(12) = "（王不停从床上掉下来了....）ss"
+   s(12) = "（韩佳里从床上掉下来了....）ss"
    s(13) = manname + "：你再不起我不理你了。ss"
 ELSE
    l(2) = 6: start(2) = 1
-   s(1) = manname + "：啊，王不停，你终于起来了。ss"
-   s(2) = "王不停：呆会儿还得睡。ss"
+   s(1) = manname + "：啊，韩佳里，你终于起来了。ss"
+   s(2) = "韩佳里：呆会儿还得睡。ss"
    s(3) = manname + "：......ss"
    s(4) = manname + "：那个~~入口``又出现了，不想去看看吗？ss"
-   s(5) = "王不停：昨天晚上我在外边玩时看一个大怪物从入口钻了出来，"
+   s(5) = "韩佳里：昨天晚上我在外边玩时看一个大怪物从入口钻了出来，"
    s(6) = "      ``吓死我了。ss"
    s(7) = "      ``才不去那鬼地方。ss"
 END IF
 END SUB
 
-SUB room2
+SUB room10
 mapname = "教室中"
 whichhouse = 2
 IF loadxy THEN mx = 12: my = 2 ELSE mx = 12: my = 2
@@ -1976,6 +2071,169 @@ IF NOT action(1) THEN
 END IF
 END SUB
 
+SUB room11
+toward = "up"
+mapname = "郭巍家中"
+mx = 8: my = 7
+m(1) = "wwwwwwwwwwwwwww"
+m(2) = "w   w         w"
+m(3) = "w   www       w"
+m(4) = "www           w"
+m(5) = "w    w   w  www"
+m(6) = "w    w   w    w"
+m(7) = "w    w   w    w"
+m(8) = "wwwwwwwoowwwwww"
+   l(2) = 0: start(2) = 1
+   s(1) = manname + "：韩佳里！走，上学去！ss"
+
+END SUB
+
+SUB room12
+toward = "up"
+mapname = "郭巍家中"
+mx = 8: my = 7
+m(1) = "wwwwwwwwwwwwwww"
+m(2) = "w   w   w     w"
+m(3) = "w wwwww wwwww w"
+m(4) = "www           w"
+m(5) = "w w  ww ww  www"
+m(6) = "w w  w   ww   w"
+m(7) = "w    w   w    w"
+m(8) = "wwwwwwwowwwwwww"
+o(1) = "000000000000000"
+o(2) = "0000j0000000000"
+o(3) = "000000000000000"
+o(4) = "000000000000000"
+o(5) = "000000000000000"
+o(6) = "000000000000000"
+o(7) = "000000000000000"
+o(8) = "000000000000000"
+  
+   l(2) = 0: start(2) = 1
+   s(1) = manname + "：韩佳里！走，上学去！ss"
+
+END SUB
+
+SUB room13
+toward = "up"
+mapname = "郭巍家中"
+mx = 8: my = 7
+m(1) = "wwwwwwwwwwwwwww"
+m(2) = "w   w         w"
+m(3) = "w   www       w"
+m(4) = "w w           w"
+m(5) = "w    w   w  www"
+m(6) = "w    w   w    w"
+m(7) = "w    w   w    w"
+m(8) = "wwwwwwwoowwwwww"
+   l(2) = 0: start(2) = 1
+   s(1) = manname + "：韩佳里！走，上学去！ss"
+
+END SUB
+
+SUB room14
+toward = "up"
+mapname = "家具店"
+mx = 8: my = 7
+m(1) = "wwwwwwwwwwwwwww"
+m(2) = "wdddddddddddddw"
+m(3) = "wdddddddddddddw"
+m(4) = "wdddddddddddddw"
+m(5) = "wdddddddddddddw"
+m(6) = "wdddddddddddddw"
+m(7) = "wwwwww   1wwwww"
+m(8) = "wwwwwwoooowwwww"
+   l(1) = 3: start(1) = 1
+   s(1) = manname + "：你们店里怎么只有椅子？ss"
+   s(2) = "老板：这游戏的美工就会画这个。ss"
+   s(3) = "老板：还把我画得这么呆。ss"
+   s(4) = manname + "：嗯，看得出来，你和郭巍长得一模一样。ss"
+END SUB
+
+SUB room2
+toward = "up"
+mapname = manname + "家中"
+mx = 8: my = 7
+m(1) = "wwwwwwwwwwwwwww"
+m(2) = "w   d      d  w"
+m(3) = "w             w"
+m(4) = "w             w"
+m(5) = "w             w"
+m(6) = "w             w"
+m(7) = "w             w"
+m(8) = "wwwwwwwoowwwwww"
+   l(2) = 0: start(2) = 1
+   s(1) = manname + "：韩佳里！走，上学去！ss"
+END SUB
+
+SUB room3
+toward = "up"
+mapname = "破烂一间房"
+mx = 8: my = 7
+m(1) = "wwwwwwwwwwwwwww"
+m(2) = "w             w"
+m(3) = "w             w"
+m(4) = "w             w"
+m(5) = "w             w"
+m(6) = "w             w"
+m(7) = "w             w"
+m(8) = "wwwwwwwoowwwwww"
+   l(2) = 0: start(2) = 1
+   s(1) = manname + "：韩佳里！走，上学去！ss"
+
+END SUB
+
+SUB room31
+toward = "up"
+mapname = "睡仙家中"
+mx = 8: my = 7
+m(1) = "wwwwwwwwwwwwwww"
+m(2) = "w   w         w"
+m(3) = "w   www       w"
+m(4) = "w w           w"
+m(5) = "w    w   w  www"
+m(6) = "w    w   w    w"
+m(7) = "w    w   w    w"
+m(8) = "wwwwwwwoowwwwww"
+   l(2) = 0: start(2) = 1
+   s(1) = manname + "：韩佳里！走，上学去！ss"
+
+END SUB
+
+SUB room4
+toward = "up"
+mapname = "CCTV"
+mx = 8: my = 7
+m(1) = "wwwwwwwwwwwwwww"
+m(2) = "w     dd      w"
+m(3) = "w             w"
+m(4) = "w  dddddddd   w"
+m(5) = "w             w"
+m(6) = "w  dddddddd   w"
+m(7) = "w             w"
+m(8) = "wwwwwwwoowwwwww"
+   l(2) = 0: start(2) = 1
+   s(1) = manname + "：韩佳里！走，上学去！ss"
+
+END SUB
+
+SUB room5
+toward = "up"
+mapname = "郭巍家中"
+mx = 8: my = 7
+m(1) = "wwwwwwwwwwwwwww"
+m(2) = "w   w         w"
+m(3) = "w   www       w"
+m(4) = "w w           w"
+m(5) = "w    w   w  www"
+m(6) = "w    w   w    w"
+m(7) = "w    w   w    w"
+m(8) = "wwwwwwwoowwwwww"
+   l(2) = 0: start(2) = 1
+   s(1) = manname + "：韩佳里！走，上学去！ss"
+
+END SUB
+
 SUB room9
 map = 5
 mapname = "秘密小路"
@@ -1990,13 +2248,13 @@ m(7) = "t0000000000004t"
 m(8) = "ttttttttttttttt"
 
 l(4) = 6: start(4) = 1
-s(1) = manname + "：呀！马名予，你怎么跑到这里来了？ss"
-s(2) = "马名予：我正在摘巧克力蛋糕，忽然看见前面有一棵苹果树，"
+s(1) = manname + "：呀！马松，你怎么跑到这里来了？ss"
+s(2) = "马松：我正在摘巧克力蛋糕，忽然看见前面有一棵苹果树，"
 s(3) = "     ``要知道，木桶小镇已经很多年没有苹果树了。ss"
 s(4) = manname + "：然后呢？ss"
-s(5) = "马名予：我想去摘，可脚下一滑，就掉到这来了。ss"
+s(5) = "马松：我想去摘，可脚下一滑，就掉到这来了。ss"
 s(6) = manname + "：我以前怎么没来过这里？？ss"
-s(7) = "马名予：我们怎么出去呀？？！！ss"
+s(7) = "马松：我们怎么出去呀？？！！ss"
 into = true
 END SUB
 
@@ -2024,7 +2282,7 @@ DO
             k$ = MID$(s(sayline), i, 2)
             IF k$ = ":" OR k$ = "：" THEN COLOR 3
             IF LEFT$(k$, 1) = "`" THEN COLOR 3: k$ = ""
-            IF LEFT$(k$, 1) = "~" THEN COLOR 10: k$ = ""
+            IF LEFT$(k$, 1) = "~" THEN COLOR 10: k$ = ""        '加重
             IF RIGHT$(k$, 1) = "A" OR k$ = "Ａ" THEN act(active) = true: k$ = "": active = false
             IF RIGHT$(k$, 1) = "s" OR k$ = "ｓ" THEN EXIT FOR
             PRINT k$;
@@ -2047,7 +2305,7 @@ DO
              IF TIMER - autotime > 2 THEN CALL autorun: autotime = TIMER
            LOOP WHILE a$ = "" OR a$ = up$ OR a$ = down$ OR a$ = lef$ OR a$ = righ$
            LINE (480, 430)-(490, 435), 0, BF
-           LOCATE 23, 39: PRINT " "
+           LOCATE 23, 39: PRINT " "         'NEXT LINE
            LOCATE y0 - 1, 1
         END IF
         LINE (0, 330)-(550, 450), 1, B
@@ -2088,7 +2346,7 @@ a$ = INPUT$(1)
 LOCATE 22, 30: PRINT "                               "
 END SUB
 
-SUB sleeping
+SUB sleeping '500,420
 'LINE (0, 0)-(10, 0), 15     '  x=10     /=5
 'LINE (0, 0)-(5, 5), 15
 'LINE (5, 5)-(10, 0), 15
@@ -2112,7 +2370,7 @@ dc = 3
 c = 4
 
 CLS
-
+'PUT (50, 100), man4
 GOSUB drawman
 GOSUB drawmenu
 GOSUB drawlife
@@ -2152,12 +2410,12 @@ RETURN
     
 END SUB
 
-SUB whitesay (say AS STRING)  '旁白
-sayl = LEN(say)
+SUB whitesay (say$) '旁白
+sayl = LEN(say$)
 VIEW PRINT 20 TO 23
 LOCATE 21, 40 - sayl / 2
 FOR i = 1 TO sayl - 1 STEP 2
-    k$ = MID$(say, i, 2)
+    k$ = MID$(say$, i, 2)
     PRINT k$;
     'FOR tmp = 0 TO 15000: NEXT       'sayspeed
     t = TIMER
