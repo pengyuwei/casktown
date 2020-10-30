@@ -136,9 +136,8 @@ IF in = "S" AND into = true THEN SaveGame x, y, mx, my, autotime, runstep
 IF in = "L" THEN GOSUB LoadGame
 IF in = "`" THEN END
 IF in = up$ THEN
-   'IF toward = "up" THEN
-   'PUT (x + 1, y + 1), man1, PSET
-   toward = "up"
+   IF toward = "up" THEN
+   PUT (x + 1, y + 1), man1, PSET
    IF NOT object AND my > 1 THEN
       IF runstep THEN
          FOR tmp = y TO y - 40 STEP -1
@@ -146,7 +145,7 @@ IF in = up$ THEN
              IF tmp > y - 40 THEN PUT (x + 1, tmp), man1, PSET
          NEXT
       ELSE
-         PUT (x + 1, y + 1), man1, PSET: PUT (x + 1, y + 1), man1, XOR
+      PUT (x + 1, y + 1), man1, PSET: PUT (x + 1, y + 1), man1, XOR
       END IF
       clk
       my = my - 1
@@ -154,15 +153,14 @@ IF in = up$ THEN
       PUT (x + 1, y + 1), man1
    END IF
    say = 0
-   'ELSE
+   ELSE
    toward = "up"
    PUT (x + 1, y + 1), man1, PSET
-   'END IF
+   END IF
 END IF
 IF in = down$ THEN
-   'IF toward = "down" THEN
-   'PUT (x + 1, y + 1), man2, PSET
-   toward = "down"
+   IF toward = "down" THEN
+   PUT (x + 1, y + 1), man2, PSET
    IF NOT object AND my < 8 THEN
       IF runstep THEN
          FOR tmp = y TO y + 40
@@ -178,15 +176,14 @@ IF in = down$ THEN
       PUT (x + 1, y + 1), man2
    END IF
    say = 0
-   'ELSE
+   ELSE
    toward = "down"
    PUT (x + 1, y + 1), man2, PSET
-   'END IF
+   END IF
 END IF
 IF in = lef$ THEN
-   'IF toward = "left" THEN
-   'PUT (x + 1, y + 1), Man3, PSET
-   toward = "left"
+   IF toward = "left" THEN
+   PUT (x + 1, y + 1), Man3, PSET
    IF NOT object AND mx > 1 THEN
       IF runstep THEN
          FOR tmp = x TO x - 40 STEP -1
@@ -202,15 +199,14 @@ IF in = lef$ THEN
       PUT (x + 1, y + 1), Man3
    END IF
    say = 0
-   'ELSE
+   ELSE
    toward = "left"
    PUT (x + 1, y + 1), Man3, PSET
-   'END IF
+   END IF
 END IF
 IF in = righ$ THEN
-   'IF toward = "right" THEN
-   'PUT (x + 1, y + 1), man4, PSET
-   toward = "right"
+   IF toward = "right" THEN
+   PUT (x + 1, y + 1), man4, PSET
    IF NOT object AND mx < 15 THEN
       IF runstep THEN
          FOR tmp = x TO x + 40 STEP 1
@@ -218,7 +214,7 @@ IF in = righ$ THEN
              IF tmp < x + 40 THEN PUT (tmp + 2, y + 1), man4, PSET
          NEXT
       ELSE
-         PUT (x + 1, y + 1), man4, PSET: PUT (x + 1, y + 1), man4
+      PUT (x + 1, y + 1), man4, PSET: PUT (x + 1, y + 1), man4
       END IF
       clk
       mx = mx + 1
@@ -226,10 +222,10 @@ IF in = righ$ THEN
       PUT (x + 1, y + 1), man4
    END IF
    say = 0
-   'ELSE
+   ELSE
    toward = "right"
    PUT (x + 1, y + 1), man4, PSET
-   'END IF
+   END IF
 END IF
 
 
@@ -364,12 +360,11 @@ FOR i = 0 TO 45
      WHILE TIMER - t < .01: WEND
 NEXT
 t = TIMER
-DO WHILE TIMER - t < 5
+WHILE TIMER - t < 5
 FOR i = 1 TO 500 STEP 10
     CIRCLE (300, 150), i, INT(RND * 15)
 NEXT
-IF INKEY$ <> "" THEN EXIT DO
-LOOP
+WEND
 
 i0 = 1
 i = 1
@@ -607,11 +602,9 @@ pal
 clcon
 COLOR 4
 LOCATE 17, 15
-PRINT "联系地址 : 100083 北京科技大学8712信箱 98-3班  P.Y.W.收"
+PRINT "联系地址:100083 北京科技大学8712信箱 98-3班  P.Y.W.收"
 LOCATE 18, 15
-PRINT "TEL      : (010) 62394625"
-LOCATE 19, 15
-PRINT "E-mail   : Toyshop@263.net"
+PRINT "TEL:     (010) 6239 4625"
 pal
 COLOR 15
 LOCATE 11, 15
@@ -619,7 +612,7 @@ PRINT "内部测试版  V56.5"
 
 COLOR 13
 LOCATE 14, 15
-PRINT "我们的故事暂时到此结束."
+PRINT "我们的故事也该结束了."
 FOR i = 1 TO 45
     PALETTE 15, 65535 * i + 256 * i + i
     t = TIMER
@@ -688,10 +681,8 @@ LINE (245, 87)-(258, 98), 0, BF
 LINE (45, 125)-(259, 145), cc, BF
 LOCATE 8, 7: COLOR 10: PRINT "s    t    u    d    i    o"
 LOCATE 9, 35: PRINT "PRESENT"
-LOCATE 19, 50: PRINT "    ART : G.W."
-LOCATE 20, 50: PRINT "Program : P.Y.W.(SEA)"
-LOCATE 21, 50: PRINT "   Main : 1998.11-1999.2"
-LOCATE 22, 48: PRINT "最后修改于1999年08月08日."
+LOCATE 20, 50: PRINT "Program:P.Y.W.(SEA)"
+LOCATE 21, 50: PRINT "1998 11-1999 2"
 
 FOR toyi = 1 TO 42
     PALETTE 15, 65535 * toyi + 256 * toyi + toyi
@@ -855,12 +846,12 @@ END SUB
 SUB initstore
 addjin = 20
 jin = 1
-KEY 1, CHR$(27) + "马宇驰"
-KEY 2, CHR$(27) + "曾昕宗"
-KEY 3, CHR$(27) + "韩佳里"
-KEY 4, CHR$(27) + "李洪志"
-KEY 5, CHR$(27) + "希特勒"
-KEY 6, CHR$(27) + "韦小宝"
+KEY 1, CHR$(27) + "贾旭"
+KEY 2, CHR$(27) + "郭巍"
+KEY 3, CHR$(27) + "于畅"
+KEY 4, CHR$(27) + "顾鹏"
+KEY 5, CHR$(27) + "朱巨军"
+KEY 6, CHR$(27) + "马松"
 KEY 7, CHR$(27) + "机器猫"
 KEY 8, CHR$(27) + "野比"
 KEY 9, CHR$(27) + "强夫"
@@ -892,9 +883,6 @@ END IF
 SCREEN 12
 PALETTE 7, 65536 * 60 + 256 * 60 + 60
 PALETTE 14, 65535 * 40 + 256 * 40 + 40
-FOR i = 1 TO 15
-    PALETTE i, 0
-NEXT
 display = true
 COLOR 14    'name color
 FOR i = 1 TO 99
@@ -1352,9 +1340,6 @@ GET (0, 0)-(40, 40), space
 'it(2) = "天香续命露"
 'it(3) = "饼乾"
 jin = 999: GOSUB add
-PALETTE
-PALETTE 7, 65536 * 60 + 256 * 60 + 60
-PALETTE 14, 65535 * 40 + 256 * 40 + 40
 EXIT SUB
 
 add:
@@ -1408,13 +1393,13 @@ o(7) = "00000000000000t"
 o(8) = "t00000000000000"
 
 IF NOT action(1) THEN
-   l(1) = 4: start(1) = 14
+   l(1) = 5: start(1) = 14
    s(14) = manname + "：呀！这不是郭巍吗？"
    s(15) = "郭巍：那咱们再见吧....我有~~重要``的事情要做，不要打扰我。ss"
    s(16) = manname + "：......ss"
    s(17) = manname + "：那好吧，我先走了......ss"
-   's(18) = manname + "心想：呀，一定是昨天我把他的像皮弄丢了，他生我的气了。ss"
-   s(18) = "郭巍心想：倒霉，偏偏赶上小便时过来。ss"
+   s(18) = manname + "心想：呀，一定是昨天我把他的像皮弄丢了，他生我的气了。ss"
+   s(19) = "郭巍心想：倒霉，偏偏赶上小便时过来。ss"
 ELSE
    l(1) = 4: start(1) = 1
    s(1) = "郭巍：" + manname + "，昨天晚上看〈阿拉蕾〉了吗？特好玩。ss"
