@@ -345,11 +345,11 @@ DO
    FOR i = 1 TO i0
       CIRCLE (300, 150), i, 0
    NEXT
-
+   PUT (x, y), man4, PSET
    FOR i = i0 TO 360 STEP 10
       CIRCLE (300, 150), i, INT(RND * 15)
    NEXT
-   PUT (x, y), man4
+   PUT (x, y), man4, PSET
 LOOP UNTIL i0 > 360
 
 VIEW
@@ -484,7 +484,7 @@ FOR i = 1 TO 15
         END SELECT
     LINE (0, 0)-(600, 320), 1, B
     NEXT
-FOR temp = 0 TO 49999: NEXT
+'FOR temp = 0 TO 49999: NEXT
 NEXT
 x = mx * 40 - 40: y = my * 40 - 40
 SELECT CASE toward
@@ -578,7 +578,7 @@ PRINT "TEL:     (010) 6239 4625"
 pal
 COLOR 15
 LOCATE 11, 15
-PRINT "ÄÚ²¿²âÊÔ°æ  V56.3"
+PRINT "ÄÚ²¿²âÊÔ°æ  V56.4"
 
 COLOR 13
 LOCATE 14, 15
@@ -814,16 +814,18 @@ into = true
 END SUB
 
 SUB initstore
-KEY 1, CHR$(27) + "ÕÅÐ¡Èá"
-KEY 2, CHR$(27) + "¸ß»ªÃ÷"
-KEY 3, CHR$(27) + "Ê¯Ð»±ò"
-KEY 4, CHR$(27) + "Ë¾´ºÅô"
-KEY 5, CHR$(27) + "ÅíÓñì¿"
-KEY 6, CHR$(27) + "±È¶û-¸Ç´Ä"
+addjin = 20
+jin = 1
+KEY 1, CHR$(27) + "¼ÖÐñ"
+KEY 2, CHR$(27) + "¹ùÎ¡"
+KEY 3, CHR$(27) + "ÓÚ³©"
+KEY 4, CHR$(27) + "¹ËÅô"
+KEY 5, CHR$(27) + "Öì¾Þ¾ü"
+KEY 6, CHR$(27) + "ÂíËÉ"
 KEY 7, CHR$(27) + "»úÆ÷Ã¨"
 KEY 8, CHR$(27) + "Ò°±È"
 KEY 9, CHR$(27) + "Ç¿·ò"
-KEY 10, CHR$(27) + "Ò»ÐÝ"
+KEY 10, CHR$(27) + "´ô¹Ï"
         
 pause = false
 
@@ -858,17 +860,17 @@ FOR i = 1 TO 99
     act(i) = false             'Î´·¢Éú   ¶Ô»°etc.
 NEXT
 
-   FOR cx = 0 TO 600 STEP 40
-       LINE (cx, 0)-(cx, 320), 3
-   NEXT
-   FOR cy = 0 TO 320 STEP 40
-       LINE (0, cy)-(600, cy), 3
-   NEXT
+'   FOR cx = 0 TO 600 STEP 40
+'       LINE (cx, 0)-(cx, 320), 3
+'   NEXT
+'   FOR cy = 0 TO 320 STEP 40
+'       LINE (0, cy)-(600, cy), 3
+'   NEXT
 
 'map=15x8     box=40x40
 COLOR 14
 '----------------------------------------------------men4
-CLS
+jin = jin + addjin: GOSUB add
 FOR i = 10 TO 25: CIRCLE (20, 10), i, 6: NEXT
 FOR i = 10 TO 23: CIRCLE (20, 12), i, 6: NEXT
 FOR i = 1 TO 5: CIRCLE (6, 26), i, 0: NEXT
@@ -897,7 +899,7 @@ LINE (25, 18)-(26, 19), 7, B
 LINE (24, 19)-(27, 19), 0, B
 GET (1, 1)-(39, 39), autoMan4
 '----------------------------------------------------men3
-CLS
+jin = jin + addjin: GOSUB add
 FOR i = 10 TO 25: CIRCLE (20, 10), i, 6: NEXT
 FOR i = 10 TO 23: CIRCLE (20, 12), i, 6: NEXT
 FOR i = 1 TO 5: CIRCLE (6, 26), i, 0: NEXT
@@ -928,7 +930,7 @@ LINE (12, 19)-(15, 19), 0, B
 GET (1, 1)-(39, 39), autoMan3
 IF pause THEN a$ = INPUT$(1)
 '----------------------------------------------------men1
-CLS
+jin = jin + addjin: GOSUB add
 FOR i = 10 TO 25: CIRCLE (20, 10), i, 6: NEXT
 FOR i = 10 TO 23: CIRCLE (20, 12), i, 6: NEXT
 FOR i = 1 TO 5: CIRCLE (6, 26), i, 0: NEXT
@@ -949,7 +951,7 @@ CIRCLE (15, 36), 1, 7: CIRCLE (25, 36), 1, 7
 GET (1, 1)-(39, 39), man1
 IF pause THEN a$ = INPUT$(1)
 '----------------------------------------------------men2
-CLS
+jin = jin + addjin: GOSUB add
 FOR i = 10 TO 25: CIRCLE (20, 10), i, 6: NEXT
 FOR i = 10 TO 23: CIRCLE (20, 12), i, 6: NEXT
 FOR i = 1 TO 5: CIRCLE (6, 26), i, 0: NEXT
@@ -980,7 +982,7 @@ LINE (18, 23)-(22, 25), 7, BF
 GET (1, 1)-(39, 39), autoMan1
 IF pause THEN a$ = INPUT$(1)
 
-CLS
+jin = jin + addjin: GOSUB add
 c = 3
 LINE (1, 14)-(5, 29), c, B
 IF pause THEN a$ = INPUT$(1)
@@ -1006,11 +1008,11 @@ PSET (18, 6), c
 CIRCLE (20, 4), 1, c
 CIRCLE (16, 4), 1, c
 GET (1, 1)-(39, 39), people1                      'people 1
-CLS
+jin = jin + addjin: GOSUB add
 PUT (1, 1), people1
 'LOCATE 2, 1: PRINT "¹ù Î¡"
 GET (0, 0)-(40, 40), people1
-CLS
+jin = jin + addjin: GOSUB add
 FOR i = 0 TO 19
     CIRCLE (20, 20), i, 2
 NEXT
@@ -1019,7 +1021,7 @@ FOR i = 1 TO 5
 NEXT
 LINE (19, 1)-(21, 20), 7, BF
 GET (1, 1)-(39, 39), people2                           'people2
-CLS
+jin = jin + addjin: GOSUB add
 LOCATE 2, 1: PRINT "¹Ë Åô"
 CIRCLE (20, 20), 19, 6
 FOR i = 1 TO 5
@@ -1031,7 +1033,7 @@ NEXT
 
 GET (1, 1)-(39, 39), people3
 IF pause THEN a$ = INPUT$(1)
-CLS            '                                ÂíËÉ
+jin = jin + addjin: GOSUB add       '                                ÂíËÉ
 LOCATE 2, 1: PRINT "Âí ËÉ"
 CIRCLE (20, 20), 19, 14
 FOR i = 1 TO 5
@@ -1042,7 +1044,7 @@ FOR i = 1 TO 5
 NEXT
 GET (1, 1)-(39, 39), people4   '          ÂíËÉ
 IF pause THEN a$ = INPUT$(1)
-CLS
+jin = jin + addjin: GOSUB add
 '                                                            ÏÉÈË
 FOR i = 1 TO 10
     CIRCLE (20, 43), i, 10
@@ -1072,7 +1074,7 @@ NEXT
 GET (1, 1)-(39, 39), people5                             'people5
 IF pause THEN a$ = INPUT$(1)
 '----------------------------------------------------people6
-CLS
+jin = jin + addjin: GOSUB add
 LINE (8, 11)-(32, 30), 5, BF: LINE (2, 11)-(8, 26), 12, BF: LINE (32, 11)-(38, 26), 12, BF
 LINE (5, 27)-(8, 31), 6, BF: LINE (35, 27)-(32, 31), 6, BF: LINE (10, 31)-(18, 35), 4, BF
 LINE (22, 31)-(30, 35), 4, BF: LINE (8, 35)-(18, 38), 10, BF: LINE (22, 35)-(32, 38), 10, BF
@@ -1084,7 +1086,7 @@ FOR i = 1 TO 8
 NEXT
 GET (1, 1)-(39, 39), people6                      'people6
 IF pause THEN a$ = INPUT$(1)
-CLS
+jin = jin + addjin: GOSUB add
 CIRCLE (6, 10), 5, 7: CIRCLE (34, 10), 5, 7
 CIRCLE (6, 15), 5, 7: CIRCLE (34, 15), 5, 7
 LINE (0, 13)-(40, 20), 0, BF
@@ -1109,7 +1111,7 @@ PSET (17, 19), 0: PSET (25, 19), 0
 LINE (16, 19)-(16, 18), 0: LINE (24, 19)-(25, 18), 0
 CIRCLE (20, 23), 2, 0: LINE (18, 21)-(22, 23), 7, BF
 GET (1, 1)-(39, 39), people9                                'people9
-CLS
+jin = jin + addjin: GOSUB add
 'CIRCLE (20, 20), 19, 7
 CIRCLE (20, 15), 10, 2, , , .6
 CIRCLE (20, 26), 15, 2, , , .4
@@ -1117,7 +1119,7 @@ LINE (20, 15)-(20, 39), 2
 GET (1, 1)-(39, 39), tree                              'tree
 IF pause THEN a$ = INPUT$(1)
 
-'CLS
+'jin=jin+addjin:gosub add
 'LOCATE 2, 2: PRINT CHR$(29)
 'INE (1, 1)-(39, 39), 2, B
 'INE (4, 4)-(35, 35), 2, B
@@ -1125,12 +1127,12 @@ IF pause THEN a$ = INPUT$(1)
 'IF pause THEN a$ = INPUT$(1)
 'GET (1, 1)-(39, 39), door
 
-CLS
+jin = jin + addjin: GOSUB add
 FOR i = 5 TO 15 STEP 3
 CIRCLE (20, 20), i, 14
 NEXT
 GET (1, 1)-(39, 39), myst                               'myst
-CLS
+jin = jin + addjin: GOSUB add
 diskc = 2
 LINE (9, 21)-(13, 32), diskc, B
 LINE (13, 28)-(16, 20), diskc, B
@@ -1140,7 +1142,7 @@ LINE (5, 6)-(35, 20), diskc, BF
 GET (1, 1)-(39, 39), disk                         'disk
 'END
 IF pause THEN a$ = INPUT$(1)
-CLS
+jin = jin + addjin: GOSUB add
 'wallc = 4    'back color
 'wallcl = 8   'line color
 wallc = 2
@@ -1165,7 +1167,7 @@ PUT (1, 14), wall, PSET
 PUT (1, 27), wall, PSET
 GET (1, 1)-(39, 39), wall
 IF pause THEN a$ = INPUT$(1)
-CLS
+jin = jin + addjin: GOSUB add
 LINE (2, 40)-(20, 10), 2     '/
 IF pause THEN a$ = INPUT$(1)
 LINE -STEP(40, 0), 2          '--
@@ -1191,7 +1193,7 @@ IF pause THEN a$ = INPUT$(1)
 GET (1, 1)-(79, 79), house
 IF pause THEN a$ = INPUT$(1)
 '=--------------------------------------yun
-CLS
+jin = jin + addjin: GOSUB add
 FOR i = 1 TO 10
     CIRCLE (12, 25), i, 7
 NEXT
@@ -1207,7 +1209,7 @@ NEXT
 GET (1, 1)-(39, 39), yun
 IF pause THEN a$ = INPUT$(1)
 '--------------------------------------------------tree
-CLS
+jin = jin + addjin: GOSUB add
 FOR i = 1 TO 5
     CIRCLE (20, 10), i, 2: CIRCLE (15, 15), i, 2: CIRCLE (25, 15), i, 2
     CIRCLE (20, 20), i, 2: CIRCLE (12, 20), i, 2: CIRCLE (28, 20), i, 2
@@ -1220,7 +1222,7 @@ NEXT
 IF pause THEN a$ = INPUT$(1)
 GET (0, 0)-(40, 40), tree
 '------------------------------------------------house1
-CLS
+jin = jin + addjin: GOSUB add
 LINE (5, 5)-(35, 20), 6, BF: LINE (8, 21)-(32, 35), 7, BF
 LINE (10, 23)-(18, 31), 0, BF: LINE (14, 23)-(14, 31), 7
 LINE (10, 27)-(18, 27), 7: LINE (24, 27)-(29, 35), 0, BF
@@ -1234,7 +1236,7 @@ GET (1, 1)-(39, 39), house1
 LOCATE 10, 10: PRINT 1
 IF pause THEN a$ = INPUT$(1)
 '------------------------------------------------house2
-CLS
+jin = jin + addjin: GOSUB add
 LINE (5, 5)-(35, 20), 6, BF: LINE (8, 21)-(32, 35), 7, BF
 LINE (10, 23)-(18, 31), 0, BF: LINE (14, 23)-(14, 31), 7: LINE (10, 27)-(18, 27), 7
 LINE (24, 27)-(29, 35), 0, BF: LINE (24, 6)-(29, 16), 7, BF: LINE (23, 6)-(30, 8), 7, BF
@@ -1242,7 +1244,7 @@ GET (0, 0)-(40, 40), house2
 LOCATE 10, 10: PRINT 2
 '------------------------------------------------house3
 IF pause THEN a$ = INPUT$(1)
-CLS
+jin = jin + addjin: GOSUB add
 LINE (5, 15)-(20, 35), 10, BF: LINE (5, 6)-(20, 14), 10, B
 LINE (21, 25)-(35, 35), 10, BF: LINE (21, 18)-(35, 24), 10, B: LINE (7, 17)-(18, 33), 1, BF
 FOR i = 7 TO 18 STEP 2
@@ -1260,7 +1262,7 @@ GET (0, 0)-(40, 40), house3
 LOCATE 10, 10: PRINT 3
 IF pause THEN a$ = INPUT$(1)
 '------------------------------------------------house4
-CLS
+jin = jin + addjin: GOSUB add
 LINE (6, 15)-(15, 8), 6: LINE (6, 25)-(15, 19), 6: LINE (6, 25)-(6, 15), 6
 LINE (15, 8)-(23, 15), 6: LINE (15, 19)-(22, 25), 6: LINE (22, 15)-(35, 15), 6
 LINE (22, 25)-(35, 25), 6: LINE (35, 15)-(35, 25), 6: PAINT (8, 16), 6
@@ -1275,7 +1277,7 @@ LOCATE 10, 10: PRINT 4
 
 '------------------------------------------------house5
 IF pause THEN a$ = INPUT$(1)
-CLS
+jin = jin + addjin: GOSUB add
 DIM xxx%(500): DIM yyy%(500)
 LINE (2, 9)-(10, 38), 10, BF: LINE (2, 9)-(15, 5), 6: LINE (2, 9)-(10, 9), 6
 LINE (10, 9)-(23, 5), 6: LINE (23, 5)-(15, 5), 6: LINE (21, 6)-(13, 6), 6
@@ -1299,14 +1301,41 @@ IF pause THEN a$ = INPUT$(1)
 GET (0, 0)-(40, 40), house5
 LOCATE 10, 10: PRINT 5
 IF pause THEN a$ = INPUT$(1)
-CLS
+jin = jin + addjin: GOSUB add
 GET (1, 1)-(39, 39), house9
 IF pause THEN a$ = INPUT$(1)
-CLS
+jin = jin + addjin: GOSUB add
 GET (0, 0)-(40, 40), space
 'it(1) = "Ä¾¹÷"
 'it(2) = "ÌìÏãÐøÃüÂ¶"
 'it(3) = "±ýÇ¬"
+jin = 999: GOSUB add
+EXIT SUB
+
+add:
+CLS
+RETURN
+LINE (45, 378)-(502, 412), 1, B
+LINE (46, 379)-(501, 411), 1, B
+COLOR 3
+LOCATE 14, 7: PRINT "Produce with Microsoft Quick Basic 4.0"
+LOCATE 16, 7: PRINT "Toyshop Studio 1997-1999"
+LOCATE 18, 7: PRINT "E-main:Toyshop@263.net"
+LOCATE 20, 7: PRINT "Loading..."
+pal
+IF jin > 450 THEN jin = 450
+LINE (0, 0)-(100, 100), 0, BF
+FOR i = jin0 TO jin
+    LINE (50, 380)-(50 + INT(i), 410), 14, BF
+    pal
+    FOR tmp = 0 TO 7999: NEXT
+NEXT
+LINE (49, 379)-(501, 411), 1, B
+LINE (48, 378)-(502, 412), 1, B
+FOR tmp = 0 TO 29999: NEXT
+jin0 = jin
+RETURN
+
 END SUB
 
 SUB map1   '15x8
@@ -2001,7 +2030,8 @@ DO
             IF RIGHT$(k$, 1) = "A" OR k$ = "£Á" THEN act(active) = true: k$ = "": active = false
             IF RIGHT$(k$, 1) = "s" OR k$ = "£ó" THEN EXIT FOR
             PRINT k$;
-            FOR tmp = 0 TO 40000: NEXT       'sayspeed
+            FOR tmp = 0 TO 15000: NEXT       'sayspeed
+            IF INKEY$ = CHR$(27) THEN EXIT DO
         NEXT
         PRINT
         LINE (0, 330)-(500, 450), 1, B
@@ -2041,6 +2071,10 @@ LINE (0, 330)-(500, 450), 0, BF
 
 clk
 VIEW PRINT
+END SUB
+
+SUB savegame
+
 END SUB
 
 SUB sleeping '500,420
