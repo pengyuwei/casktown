@@ -1,3 +1,5 @@
+DECLARE SUB LoadGame (x!, y!, mx!, my!, autotime!, runstep!)
+DECLARE SUB SaveGame (x!, y!, mx!, my!, autotime!, runstep!)
 DECLARE SUB autorun ()
 DECLARE SUB findsth ()
 DECLARE SUB map16 ()
@@ -130,10 +132,13 @@ DO
 in = INKEY$
 IF in <> "" THEN autotime = TIMER
 IF TIMER - autotime > 2 THEN CALL autorun: autotime = TIMER
+IF in = "S" AND into = true THEN SaveGame x, y, mx, my, autotime, runstep
+IF in = "L" THEN GOSUB LoadGame
 IF in = "`" THEN END
 IF in = up$ THEN
-   IF toward = "up" THEN
-   PUT (x + 1, y + 1), man1, PSET
+   'IF toward = "up" THEN
+   'PUT (x + 1, y + 1), man1, PSET
+   toward = "up"
    IF NOT object AND my > 1 THEN
       IF runstep THEN
          FOR tmp = y TO y - 40 STEP -1
@@ -141,7 +146,7 @@ IF in = up$ THEN
              IF tmp > y - 40 THEN PUT (x + 1, tmp), man1, PSET
          NEXT
       ELSE
-      PUT (x + 1, y + 1), man1, PSET: PUT (x + 1, y + 1), man1, XOR
+         PUT (x + 1, y + 1), man1, PSET: PUT (x + 1, y + 1), man1, XOR
       END IF
       clk
       my = my - 1
@@ -149,14 +154,15 @@ IF in = up$ THEN
       PUT (x + 1, y + 1), man1
    END IF
    say = 0
-   ELSE
+   'ELSE
    toward = "up"
    PUT (x + 1, y + 1), man1, PSET
-   END IF
+   'END IF
 END IF
 IF in = down$ THEN
-   IF toward = "down" THEN
-   PUT (x + 1, y + 1), man2, PSET
+   'IF toward = "down" THEN
+   'PUT (x + 1, y + 1), man2, PSET
+   toward = "down"
    IF NOT object AND my < 8 THEN
       IF runstep THEN
          FOR tmp = y TO y + 40
@@ -172,14 +178,15 @@ IF in = down$ THEN
       PUT (x + 1, y + 1), man2
    END IF
    say = 0
-   ELSE
+   'ELSE
    toward = "down"
    PUT (x + 1, y + 1), man2, PSET
-   END IF
+   'END IF
 END IF
 IF in = lef$ THEN
-   IF toward = "left" THEN
-   PUT (x + 1, y + 1), Man3, PSET
+   'IF toward = "left" THEN
+   'PUT (x + 1, y + 1), Man3, PSET
+   toward = "left"
    IF NOT object AND mx > 1 THEN
       IF runstep THEN
          FOR tmp = x TO x - 40 STEP -1
@@ -195,14 +202,15 @@ IF in = lef$ THEN
       PUT (x + 1, y + 1), Man3
    END IF
    say = 0
-   ELSE
+   'ELSE
    toward = "left"
    PUT (x + 1, y + 1), Man3, PSET
-   END IF
+   'END IF
 END IF
 IF in = righ$ THEN
-   IF toward = "right" THEN
-   PUT (x + 1, y + 1), man4, PSET
+   'IF toward = "right" THEN
+   'PUT (x + 1, y + 1), man4, PSET
+   toward = "right"
    IF NOT object AND mx < 15 THEN
       IF runstep THEN
          FOR tmp = x TO x + 40 STEP 1
@@ -210,7 +218,7 @@ IF in = righ$ THEN
              IF tmp < x + 40 THEN PUT (tmp + 2, y + 1), man4, PSET
          NEXT
       ELSE
-      PUT (x + 1, y + 1), man4, PSET: PUT (x + 1, y + 1), man4
+         PUT (x + 1, y + 1), man4, PSET: PUT (x + 1, y + 1), man4
       END IF
       clk
       mx = mx + 1
@@ -218,10 +226,10 @@ IF in = righ$ THEN
       PUT (x + 1, y + 1), man4
    END IF
    say = 0
-   ELSE
+   'ELSE
    toward = "right"
    PUT (x + 1, y + 1), man4, PSET
-   END IF
+   'END IF
 END IF
 
 
@@ -279,6 +287,31 @@ pal
 'action(2) = -1
 LOOP
 
+LoadGame:
+LOCATE 22, 30: PRINT "正在读取...                "
+OPEN "T1.rpg" FOR INPUT AS #1
+     INPUT #1, x, y, mx, my, autotime, runstep, into, who, map, whichhouse
+     INPUT #1, nextmap
+     INPUT #1, toward
+     INPUT #1, manname
+     FOR i = 1 TO 99
+          INPUT #1, action(i), act(i)
+     NEXT
+CLOSE
+display = false
+tempx = x: tempy = y
+tempmx = mx: tempmy = my
+'IF nextmap <> 0 THEN readmap (nextmap) ELSE readmap (map)
+readmap (map)
+x = tempx: y = tempy
+mx = tempmx: my = tempmy
+drawmap
+LOCATE 22, 30: PRINT "读取完毕.         "
+a$ = INPUT$(1)
+LOCATE 22, 30: PRINT "                        "
+
+RETURN
+
 SUB autorun
 SELECT CASE toward
 CASE "up"
@@ -331,11 +364,12 @@ FOR i = 0 TO 45
      WHILE TIMER - t < .01: WEND
 NEXT
 t = TIMER
-WHILE TIMER - t < 5
+DO WHILE TIMER - t < 5
 FOR i = 1 TO 500 STEP 10
     CIRCLE (300, 150), i, INT(RND * 15)
 NEXT
-WEND
+IF INKEY$ <> "" THEN EXIT DO
+LOOP
 
 i0 = 1
 i = 1
@@ -423,6 +457,7 @@ SUB debug
 'LOCATE 22, 1: PRINT "sayline="; sayline; "  start(who)="; start(who)
 LOCATE 22, 1: PRINT "mx="; mx; " my="; my
 LOCATE 20, 1: PRINT "map="; map
+LOCATE 21, 1: PRINT "Nextmap="; nextmap
 'LOCATE 20, 1: PRINT retn
 END SUB
 
@@ -572,17 +607,19 @@ pal
 clcon
 COLOR 4
 LOCATE 17, 15
-PRINT "联系地址:100083 北京科技大学8712信箱 98-3班  P.Y.W.收"
+PRINT "联系地址 : 100083 北京科技大学8712信箱 98-3班  P.Y.W.收"
 LOCATE 18, 15
-PRINT "TEL:     (010) 6239 4625"
+PRINT "TEL      : (010) 62394625"
+LOCATE 19, 15
+PRINT "E-mail   : Toyshop@263.net"
 pal
 COLOR 15
 LOCATE 11, 15
-PRINT "内部测试版  V56.4"
+PRINT "内部测试版  V56.5"
 
 COLOR 13
 LOCATE 14, 15
-PRINT "我们的故事也该结束了."
+PRINT "我们的故事暂时到此结束."
 FOR i = 1 TO 45
     PALETTE 15, 65535 * i + 256 * i + i
     t = TIMER
@@ -651,8 +688,10 @@ LINE (245, 87)-(258, 98), 0, BF
 LINE (45, 125)-(259, 145), cc, BF
 LOCATE 8, 7: COLOR 10: PRINT "s    t    u    d    i    o"
 LOCATE 9, 35: PRINT "PRESENT"
-LOCATE 20, 50: PRINT "Program:P.Y.W.(SEA)"
-LOCATE 21, 50: PRINT "1998 11-1999 2"
+LOCATE 19, 50: PRINT "    ART : G.W."
+LOCATE 20, 50: PRINT "Program : P.Y.W.(SEA)"
+LOCATE 21, 50: PRINT "   Main : 1998.11-1999.2"
+LOCATE 22, 48: PRINT "最后修改于1999年08月08日."
 
 FOR toyi = 1 TO 42
     PALETTE 15, 65535 * toyi + 256 * toyi + toyi
@@ -685,7 +724,7 @@ END SUB
 
 SUB inhouse1
 toward = "up"
-mapname = "于畅家中"
+mapname = "韩小里家中"
 mx = 8: my = 7
 m(1) = "000000000000000"
 m(2) = "0wwwwwwwwwwwww0"
@@ -698,26 +737,26 @@ m(7) = "0wwwwww00wwwww0"
 m(8) = "000000ziiz00000"
 IF NOT action(1) THEN
    l(2) = 12: start(2) = 1
-   s(1) = manname + "：于畅！走，上学去！ss"
-   s(2) = "于畅：今天不去了....ss"
+   s(1) = manname + "：韩佳里！走，上学去！ss"
+   s(2) = "韩佳里：今天不去了....ss"
    s(3) = manname + "：......ss"
-   s(4) = "于畅：想起床真是比登天还难。ss"
+   s(4) = "韩佳里：想起床真是比登天还难。ss"
    s(5) = manname + "：我说你还是快起的好，太阳都晒屁股了。ss"
-   s(6) = "于畅：我困死了。ss"
+   s(6) = "韩佳里：我困死了。ss"
    s(7) = manname + "：你怎么那样睡觉，姿势难看死了。ss"
-   s(8) = "于畅：啊！s"
+   s(8) = "韩佳里：啊！s"
    s(9) = "      ~~大梦谁先觉，平生我自知。草堂春睡足，窗外日迟迟``。ss"
    s(10) = "铛！"
    s(11) = "...."
-   s(12) = "（于畅从床上掉下来了....）ss"
+   s(12) = "（韩佳里从床上掉下来了....）ss"
    s(13) = manname + "：你再不起我不理你了。ss"
 ELSE
    l(2) = 6: start(2) = 1
-   s(1) = manname + "：啊，于畅，你终于起来了。ss"
-   s(2) = "于畅：呆会儿还得睡。ss"
+   s(1) = manname + "：啊，韩佳里，你终于起来了。ss"
+   s(2) = "韩佳里：呆会儿还得睡。ss"
    s(3) = manname + "：......ss"
    s(4) = manname + "：那个~~入口``又出现了，不想去看看吗？ss"
-   s(5) = "于畅：昨天晚上我在外边玩时看一个大怪物从入口钻了出来，"
+   s(5) = "韩佳里：昨天晚上我在外边玩时看一个大怪物从入口钻了出来，"
    s(6) = "      ``吓死我了。ss"
    s(7) = "      ``才不去那鬼地方。ss"
 END IF
@@ -816,12 +855,12 @@ END SUB
 SUB initstore
 addjin = 20
 jin = 1
-KEY 1, CHR$(27) + "贾旭"
-KEY 2, CHR$(27) + "郭巍"
-KEY 3, CHR$(27) + "于畅"
-KEY 4, CHR$(27) + "顾鹏"
-KEY 5, CHR$(27) + "朱巨军"
-KEY 6, CHR$(27) + "马松"
+KEY 1, CHR$(27) + "马宇驰"
+KEY 2, CHR$(27) + "曾昕宗"
+KEY 3, CHR$(27) + "韩佳里"
+KEY 4, CHR$(27) + "李洪志"
+KEY 5, CHR$(27) + "希特勒"
+KEY 6, CHR$(27) + "韦小宝"
 KEY 7, CHR$(27) + "机器猫"
 KEY 8, CHR$(27) + "野比"
 KEY 9, CHR$(27) + "强夫"
@@ -853,6 +892,9 @@ END IF
 SCREEN 12
 PALETTE 7, 65536 * 60 + 256 * 60 + 60
 PALETTE 14, 65535 * 40 + 256 * 40 + 40
+FOR i = 1 TO 15
+    PALETTE i, 0
+NEXT
 display = true
 COLOR 14    'name color
 FOR i = 1 TO 99
@@ -1310,6 +1352,9 @@ GET (0, 0)-(40, 40), space
 'it(2) = "天香续命露"
 'it(3) = "饼乾"
 jin = 999: GOSUB add
+PALETTE
+PALETTE 7, 65536 * 60 + 256 * 60 + 60
+PALETTE 14, 65535 * 40 + 256 * 40 + 40
 EXIT SUB
 
 add:
@@ -1363,13 +1408,13 @@ o(7) = "00000000000000t"
 o(8) = "t00000000000000"
 
 IF NOT action(1) THEN
-   l(1) = 5: start(1) = 14
+   l(1) = 4: start(1) = 14
    s(14) = manname + "：呀！这不是郭巍吗？"
    s(15) = "郭巍：那咱们再见吧....我有~~重要``的事情要做，不要打扰我。ss"
    s(16) = manname + "：......ss"
    s(17) = manname + "：那好吧，我先走了......ss"
-   s(18) = manname + "心想：呀，一定是昨天我把他的像皮弄丢了，他生我的气了。ss"
-   s(19) = "郭巍心想：倒霉，偏偏赶上小便时过来。ss"
+   's(18) = manname + "心想：呀，一定是昨天我把他的像皮弄丢了，他生我的气了。ss"
+   s(18) = "郭巍心想：倒霉，偏偏赶上小便时过来。ss"
 ELSE
    l(1) = 4: start(1) = 1
    s(1) = "郭巍：" + manname + "，昨天晚上看〈阿拉蕾〉了吗？特好玩。ss"
@@ -1960,7 +2005,7 @@ SELECT CASE whichhouse
        CASE 4
                  'CALL inhouse4
        CASE 9
-                 CALL inhouse9
+                  CALL inhouse9
       
        CASE ELSE
 END SELECT
@@ -2073,8 +2118,23 @@ clk
 VIEW PRINT
 END SUB
 
-SUB savegame
-
+SUB SaveGame (x, y, mx, my, autotime, runstep)
+LOCATE 22, 30: PRINT "等会儿...                   "
+OPEN "T1.rpg" FOR OUTPUT AS #1
+     PRINT #1, x, y, mx, my, autotime, runstep, into, who, map, whichhouse
+     PRINT #1, nextmap
+     PRINT #1, toward
+     PRINT #1, manname
+     FOR i = 1 TO 99
+          PRINT #1, action(i), act(i)
+     NEXT
+     FOR i = 1 TO 50
+          PRINT #1, INT(RND * 99), INT(RND * 99), INT(RND * 99), INT(RND * 99)
+     NEXT
+CLOSE
+LOCATE 22, 30: PRINT "存储进度为T1.rpg ...           "
+a$ = INPUT$(1)
+LOCATE 22, 30: PRINT "                               "
 END SUB
 
 SUB sleeping '500,420
