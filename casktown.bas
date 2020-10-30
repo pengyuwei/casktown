@@ -1,3 +1,10 @@
+'Don't remove these rem line..................................................
+'ALT-X to quit game
+'Download from http://toyshop.cc.st
+'E-mail:toyclub@sina.com
+'Produce by FFB
+'Copyright 1998-2000
+'..............................................................................
 DECLARE SUB clr ()
 DECLARE SUB whitesay (say$)
 DECLARE SUB LoadGame (x!, y!, mx!, my!, autotime!, runstep!)
@@ -15,14 +22,14 @@ DECLARE SUB map10 ()
 DECLARE SUB map8 ()
 DECLARE SUB map9 ()
 DECLARE SUB map6 ()
-DECLARE SUB inhouse9 ()
+DECLARE SUB room9 ()
 DECLARE SUB debug ()
 DECLARE SUB pal ()
-DECLARE SUB inhouse2 ()
+DECLARE SUB room2 ()
 DECLARE SUB readmap (a)
 DECLARE SUB readhouse ()
 DECLARE SUB map5 ()
-DECLARE SUB inhouse1 ()
+DECLARE SUB room1 ()
 DECLARE SUB map4 ()
 DECLARE SUB map3 ()
 DECLARE SUB endgame ()
@@ -49,9 +56,9 @@ DIM SHARED people1(246)
 DIM SHARED people2(4 + INT((40 * 1 + 7) / 8) * 40 * 4)
 DIM SHARED people3(4 + INT((40 * 1 + 7) / 8) * 40 * 4)
 DIM SHARED people4(4 + INT((40 * 1 + 7) / 8) * 40 * 4)
-DIM SHARED people5(4 + INT((40 * 1 + 7) / 8) * 40 * 4)   'Ë¯ÏÉ
-DIM SHARED people6(4 + INT((40 * 1 + 7) / 8) * 40 * 4)   'teacher
-DIM SHARED people9(4 + INT((40 * 1 + 7) / 8) * 40 * 4)   'pal-main
+DIM SHARED people5(4 + INT((40 * 1 + 7) / 8) * 40 * 4)
+DIM SHARED people6(4 + INT((40 * 1 + 7) / 8) * 40 * 4)
+DIM SHARED people9(4 + INT((40 * 1 + 7) / 8) * 40 * 4)
 DIM SHARED space(4 + INT((40 * 1 + 7) / 8) * 40 * 4)
 
 DIM SHARED tree(4 + INT((40 * 1 + 7) / 8) * 40 * 4)
@@ -78,12 +85,12 @@ DIM SHARED up$
 DIM SHARED down$
 DIM SHARED lef$
 DIM SHARED righ$
-DIM SHARED in AS STRING           'inkey$
-DIM SHARED into AS INTEGER        'true--in the house  else out of house
+DIM SHARED in AS STRING
+DIM SHARED into AS INTEGER
 DIM SHARED whichhouse
 DIM SHARED loadxy AS INTEGER
 DIM SHARED manname AS STRING
-DIM SHARED display AS INTEGER 'display the map name
+DIM SHARED display AS INTEGER
 DIM SHARED nextmap AS INTEGER
 DIM SHARED x, y, mx, my
 DIM SHARED say AS INTEGER
@@ -113,7 +120,7 @@ loadxy = true
 retn = 0
 up$ = CHR$(0) + CHR$(72): down$ = CHR$(0) + CHR$(80)
 lef$ = CHR$(0) + CHR$(75): righ$ = CHR$(0) + CHR$(77)
-shot$ = CHR$(0) + CHR$(42)      'right shift
+shot$ = CHR$(0) + CHR$(42)
 man$ = CHR$(1)
 everystep = 10
 map = 1
@@ -122,12 +129,11 @@ CLS
 map1
 drawmap
 mx = 2: my = 3
-x = mx * 40 - 40: y = my * 40 - 40          'is important
+x = mx * 40 - 40: y = my * 40 - 40
 who = 1
 PUT (x + 1, y + 1), man4
 wartime = TIMER
 into = true
-'map = 3'''
 runstep = false            'run step by step
 autotime = TIMER
 DO
@@ -136,10 +142,8 @@ IF in <> "" THEN autotime = TIMER
 IF TIMER - autotime > 2 THEN CALL autorun: autotime = TIMER
 IF in = "S" AND into = true THEN SaveGame x, y, mx, my, autotime, runstep
 IF in = "L" THEN GOSUB LoadGame
-IF in = "`" THEN END
+IF in = CHR$(0) + CHR$(45) OR in = CHR$(0) + CHR$(68) THEN END
 IF in = up$ THEN
-   'IF toward = "up" THEN
-   'PUT (x + 1, y + 1), man1, PSET
    toward = "up"
    IF NOT object AND my > 1 THEN
       IF runstep THEN
@@ -156,14 +160,12 @@ IF in = up$ THEN
       PUT (x + 1, y + 1), man1
    END IF
    say = 0
-   'ELSE
+   
    toward = "up"
    PUT (x + 1, y + 1), man1, PSET
-   'END IF
+   
 END IF
 IF in = down$ THEN
-   'IF toward = "down" THEN
-   'PUT (x + 1, y + 1), man2, PSET
    toward = "down"
    IF NOT object AND my < 8 THEN
       IF runstep THEN
@@ -180,14 +182,12 @@ IF in = down$ THEN
       PUT (x + 1, y + 1), man2
    END IF
    say = 0
-   'ELSE
+   
    toward = "down"
    PUT (x + 1, y + 1), man2, PSET
-   'END IF
+   
 END IF
 IF in = lef$ THEN
-   'IF toward = "left" THEN
-   'PUT (x + 1, y + 1), Man3, PSET
    toward = "left"
    IF NOT object AND mx > 1 THEN
       IF runstep THEN
@@ -204,14 +204,12 @@ IF in = lef$ THEN
       PUT (x + 1, y + 1), man3
    END IF
    say = 0
-   'ELSE
+   
    toward = "left"
    PUT (x + 1, y + 1), man3, PSET
-   'END IF
+   
 END IF
 IF in = righ$ THEN
-   'IF toward = "right" THEN
-   'PUT (x + 1, y + 1), man4, PSET
    toward = "right"
    IF NOT object AND mx < 15 THEN
       IF runstep THEN
@@ -228,10 +226,10 @@ IF in = righ$ THEN
       PUT (x + 1, y + 1), man4
    END IF
    say = 0
-   'ELSE
+  
    toward = "right"
    PUT (x + 1, y + 1), man4, PSET
-   'END IF
+   
 END IF
 
 
@@ -285,8 +283,6 @@ END IF
 IF MID$(m(my), mx, 1) = "F" THEN endgame
 pal
 'debug
-'action(1) = -1
-'action(2) = -1
 LOOP
 
 LoadGame:
@@ -303,7 +299,7 @@ CLOSE
 display = false
 tempx = x: tempy = y
 tempmx = mx: tempmy = my
-'IF nextmap <> 0 THEN readmap (nextmap) ELSE readmap (map)
+
 readmap (map)
 x = tempx: y = tempy
 mx = tempmx: my = tempmy
@@ -327,8 +323,6 @@ CASE "down"
          WHILE TIMER - t < .3: WEND
      NEXT
      PUT (x + 1, y + 1), autoMan1, PSET
-     't = TIMER
-     'WHILE TIMER - t < 1: WEND
 CASE "left"
      FOR i = 1 TO 2
          PUT (x + 1, y + 1), autoMan3, PSET
@@ -407,8 +401,6 @@ FOR i = 45 TO 0 STEP -1
 NEXT
 
 CLS
-'LINE (1, 1)-(599, 319), 0, BF
-'LINE (639, 479)-(0, 319), 15, BF
 FOR i = 0 TO 30
     PALETTE 0, 65536 * i + 256 * i + i
     t = TIMER
@@ -533,13 +525,13 @@ NEXT
 x = mx * 40 - 40: y = my * 40 - 40
 SELECT CASE toward
 CASE "up"
-   PUT (x + 1, y + 1), man1, PSET': PUT (x + 1, y + 1), man1, XOR
+   PUT (x + 1, y + 1), man1, PSET
 CASE "down"
-   PUT (x + 1, y + 1), man2, PSET': PUT (x + 1, y + 1), man2
+   PUT (x + 1, y + 1), man2, PSET
 CASE "left"
-   PUT (x + 1, y + 1), man3, PSET': PUT (x + 1, y + 1), man3
+   PUT (x + 1, y + 1), man3, PSET
 CASE "right"
-   PUT (x + 1, y + 1), man4, PSET': PUT (x + 1, y + 1), man4
+   PUT (x + 1, y + 1), man4, PSET
 CASE ELSE
 END SELECT
 LINE (0, 0)-(600, 320), 1, B
@@ -553,7 +545,7 @@ FOR saybox = 225 TO 500
     LINE (saybox, 370)-(500 - saybox, 370), 1, B
     LINE (saybox, 400)-(500 - saybox, 400), 1, B
 NEXT
-'LINE (50, 370)-(500, 400), 1, B'
+
 LOCATE 22, 30
 PRINT mapname
 clk
@@ -568,7 +560,7 @@ FOR saybox = 500 TO 225 STEP -1
     LINE (saybox, 400)-(500 - saybox, 400), 1, B
 NEXT
 LINE (50, 370)-(500, 400), 0, BF
-'drawscore
+
 END SUB
 
 SUB drawscore
@@ -576,12 +568,6 @@ VIEW PRINT
 COLOR 5
 LINE (0, 0)-(520, 320), , B
 
-'FOR i = o TO 520 STEP 40
-'    LINE (i, 0)-(i, 320)
-'NEXT
-'FOR i = 0 TO 320 STEP 40
-'    LINE (0, i)-(520, i)
-'NEXT
 
 COLOR 2
 LOCATE 1, 68
@@ -619,15 +605,15 @@ pal
 clcon
 COLOR 4
 LOCATE 17, 15
-PRINT "ÁªÏµµØÖ· : 100083 ±±¾©¿Æ¼¼´óÑ§8712ÐÅÏä 98-3°à  P.Y.W.ÊÕ"
+PRINT "ÁªÏµµØÖ· : 100083 ±±¾©¿Æ¼¼´óÑ§8712ÐÅÏä 98-3°à  FFBÊÕ"
 LOCATE 18, 15
 PRINT "TEL      : (010) 62394625"
 LOCATE 19, 15
-PRINT "E-mail   : Toyshop@263.net"
+PRINT "E-mail   : Toyclub@sina.com"
 pal
 COLOR 15
 LOCATE 11, 15
-PRINT "ÄÚ²¿²âÊÔ°æ  V56.7"
+PRINT "ÄÚ²¿²âÊÔ°æ  V56.8F"
 
 COLOR 13
 LOCATE 14, 15
@@ -666,16 +652,11 @@ PALETTE 15, 0
 PALETTE 13, 0
 COLOR 3
 cc = 10
-'t
 LINE (43, 71)-(73, 77), cc, BF
 LINE (53, 77)-(63, 105), cc, BF
-'o
-'LOCATE 12, 12: PRINT "o"
 FOR i = 5 TO 15
 CIRCLE (91, 93), i, cc, , , 1.3
-'CIRCLE (91, 93), 5, cc, , , 1.3
 NEXT
-'y
 LINE (109, 80)-(118, 80), cc
 LINE (109, 80)-(118, 105), cc
 LINE (118, 105)-(110, 124), cc
@@ -685,22 +666,15 @@ LINE (128, 80)-(137, 80), cc
 LINE (137, 80)-(119, 124), cc
 LINE (119, 124)-(110, 124), cc
 PAINT (111, 81), cc
-'s
-'LOCATE 12, 20: PRINT "s"
 LINE (140, 80)-(165, 106), cc, BF
 LINE (149, 85)-(165, 90), 0, BF
 LINE (140, 96)-(158, 100), 0, BF
-'h
 LINE (171, 65)-(178, 105), cc, BF
 LINE (171, 82)-(195, 88), cc, BF
 LINE (188, 88)-(195, 105), cc, BF
-'o
-'LOCATE 12, 28: PRINT "o"
 FOR i = 5 TO 15
 CIRCLE (217, 93), i, cc, , , 1.3
-'CIRCLE (217, 93), 5, cc, , , 1.3
 NEXT
-'p
 LINE (238, 80)-(265, 105), cc, BF
 LINE (238, 80)-(245, 124), cc, BF
 
@@ -708,11 +682,11 @@ LINE (245, 87)-(258, 98), 0, BF
 LINE (45, 125)-(259, 145), cc, BF
 LOCATE 8, 7: COLOR 10: PRINT "s    t    u    d    i    o"
 LOCATE 9, 35: PRINT "PRESENT"
-LOCATE 19, 50: PRINT "    ART : G.W."
-LOCATE 20, 50: PRINT "Program : P.Y.W.(SEA)"
+LOCATE 19, 50: PRINT "    ART : Robing"
+LOCATE 20, 50: PRINT "Program : FFB"
 LOCATE 21, 50: PRINT "   Main : 1998.11-1999.2"
 LOCATE 22, 48: PRINT "×îºóÐÞ¸ÄÓÚ1999Äê08ÔÂ17ÈÕ."
-
+LOCATE 23, 48: PRINT " Homepage:toyshop.cc.st"
 FOR toyi = 1 TO 42
     PALETTE 15, 65535 * toyi + 256 * toyi + toyi
     IF INKEY$ <> "" THEN toyi = 40
@@ -735,149 +709,18 @@ END SUB
 
 SUB findsth
 
-LOCATE 22, 10: PRINT "·¢ÏÖËÉ×Ó"
+LOCATE 22, 10: PRINT "·¢ÏÖ" + Search
 a$ = INPUT$(1)
-LOCATE 22, 10: PRINT "        "
+LOCATE 22, 10: clr
 find = false
-
-END SUB
-
-SUB inhouse1
-toward = "up"
-mapname = "º«Ð¡Àï¼ÒÖÐ"
-mx = 8: my = 7
-m(1) = "000000000000000"
-m(2) = "0wwwwwwwwwwwww0"
-m(3) = "0w00d2w000dd0w0"
-IF action(1) THEN m(3) = "0w00d0w020dd0w0"
-m(4) = "0w0000w000000w0"
-m(5) = "0w00wwwww00www0"
-m(6) = "0w00000000000w0"
-m(7) = "0wwwwww00wwwww0"
-m(8) = "000000ziiz00000"
-IF NOT action(1) THEN
-   l(2) = 12: start(2) = 1
-   s(1) = manname + "£ºº«¼ÑÀï£¡×ß£¬ÉÏÑ§È¥£¡ss"
-   s(2) = "º«¼ÑÀï£º½ñÌì²»È¥ÁË....ss"
-   s(3) = manname + "£º......ss"
-   s(4) = "º«¼ÑÀï£ºÏëÆð´²ÕæÊÇ±ÈµÇÌì»¹ÄÑ¡£ss"
-   s(5) = manname + "£ºÎÒËµÄã»¹ÊÇ¿ìÆðµÄºÃ£¬Ì«Ñô¶¼É¹Æ¨¹ÉÁË¡£ss"
-   s(6) = "º«¼ÑÀï£ºÎÒÀ§ËÀÁË¡£ss"
-   s(7) = manname + "£ºÄãÔõÃ´ÄÇÑùË¯¾õ£¬×ËÊÆÄÑ¿´ËÀÁË¡£ss"
-   s(8) = "º«¼ÑÀï£º°¡£¡s"
-   s(9) = "      ~~´óÃÎË­ÏÈ¾õ£¬Æ½ÉúÎÒ×ÔÖª¡£²ÝÌÃ´ºË¯×ã£¬´°ÍâÈÕ³Ù³Ù``¡£ss"
-   s(10) = "îõ£¡"
-   s(11) = "...."
-   s(12) = "£¨º«¼ÑÀï´Ó´²ÉÏµôÏÂÀ´ÁË....£©ss"
-   s(13) = manname + "£ºÄãÔÙ²»ÆðÎÒ²»ÀíÄãÁË¡£ss"
-ELSE
-   l(2) = 6: start(2) = 1
-   s(1) = manname + "£º°¡£¬º«¼ÑÀï£¬ÄãÖÕÓÚÆðÀ´ÁË¡£ss"
-   s(2) = "º«¼ÑÀï£º´ô»á¶ù»¹µÃË¯¡£ss"
-   s(3) = manname + "£º......ss"
-   s(4) = manname + "£ºÄÇ¸ö~~Èë¿Ú``ÓÖ³öÏÖÁË£¬²»ÏëÈ¥¿´¿´Âð£¿ss"
-   s(5) = "º«¼ÑÀï£º×òÌìÍíÉÏÎÒÔÚÍâ±ßÍæÊ±¿´Ò»¸ö´ó¹ÖÎï´ÓÈë¿Ú×êÁË³öÀ´£¬"
-   s(6) = "      ``ÏÅËÀÎÒÁË¡£ss"
-   s(7) = "      ``²Å²»È¥ÄÇ¹íµØ·½¡£ss"
-END IF
-END SUB
-
-SUB inhouse2
-mapname = "½ÌÊÒÖÐ"
-whichhouse = 2
-IF loadxy THEN mx = 12: my = 2 ELSE mx = 12: my = 2
-m(1) = "wwwwwwwwwwwww00"
-m(2) = "w00060000000i00"
-m(3) = "wdd00ddd00ddw00"
-m(4) = "w00000000000w00"
-m(5) = "wdd00ddd00ddw00"
-m(6) = "w00000000000w00"
-m(7) = "wdd00ddd00ddw00"
-m(8) = "wwwwwwwwwwwww00"
-IF action(1) THEN
-l(6) = 5: start(6) = 1        'l(n)=lengh    start-- start from where
-s(1) = manname + "£ºÀÏÊ¦£¬ÌýËµÄÇ¸öÈë¿ÚÊÇÍ¨Íù~~ÁíÒ»¸öÊÀ½ç``µÄÍ¨µÀ£¬ÊÇÂð£¿ss"
-s(2) = "ÀÏÊ¦£º^#@÷&$#x(&^%ss"
-s(3) = "ÀÏÊ¦£ºÎÒ²»Ïë»Ø´ðÄãµÄÎÊÌâ¡£¶àÉÙÄêÀ´£¬ÄÇ¸öÈë¿Ú²»Öª³öÏÖ¹ý¶àÉÙ»Ø£¬"
-s(4) = "      ``µ«´ÓÃ»ÓÐÈË¸Ò½øÈëÆäÖÐ¡£Ç§Íò±ðµ½ÄÇÀïÈ¥£¡ss"
-s(5) = manname + "£ºÄÇÃ´¿ÉÅÂ....²»¹ýÎÒ²»ÅÂ¡£ss"
-s(6) = "ÀÏÊ¦£º²»ÌýÎÒµÄ»°ÄãÒªºó»ÚµÄ£¡£¡ss"
-ELSE
-  who = 6
-  l(6) = 6: start(6) = 1        'l(n)=lengh    start-- start from where
-  s(1) = "ÀÏÊ¦£ºÍ¬Ñ§ÃÇ£¬ÎÒÃÇÀ´×öµÀËãÊõÌâ¡£ss"
-  s(2) = "ÀÏÊ¦£º»¨£±£°£°ÔªÂòÁËÒ»Ö»Ñò£¬ÕÒ»Ø£±£²£°Ôª£¬ss"
-  s(3) = "      ``ÇëÎÊÃ¿Ö»Ñò¶àÉÙÇ®£¿ss"
-  s(4) = manname + "£º±¨¸æ£¡ss"
-  s(5) = "ÀÏÊ¦£º°¡£¿£¡" + manname + "£¡ÄãÓÖ³Ùµ½ÁË£¡ss"
-  s(6) = manname + "£º°¡£¡....²»£¬²»ÊÇ....ÎÒ....ss"
-  s(7) = "ÀÏÊ¦£º" + manname + "£¡¸øÎÒ³öÈ¥·£Õ¾£¡£¡ss"
-
-END IF
-IF NOT action(1) THEN
-    mx = 12: my = 2
-    toward = "left"
-    drawmap
-    x = mx * 40 - 40: y = my * 40 - 40
-    PUT (x + 1, y + 1), man3, PSET
-    rpgsay
-    CLS
-    PALETTE 15, 0
-    COLOR 15
-    VIEW PRINT
-    LOCATE 12, 30
-    PRINT "·ÅÑ§ºó......"
-    FOR i = 1 TO 40 STEP 2
-        PALETTE 15, 65535 * i + 256 * i + i
-        t = TIMER
-        WHILE TIMER - t < .1: WEND
-    NEXT
-    FOR i = 45 TO 1 STEP -2
-        'PALETTE 11, 65535 * i + 256 * i + i
-        PALETTE 15, 65535 * i + 256 * i + i
-        t = TIMER
-        WHILE TIMER - t < .05: WEND
-    NEXT
-    CLS
-    action(1) = true
-    map = 5
-    loadxy = true
-    map5
-    loadxy = false
-    into = false
-END IF
-END SUB
-
-SUB inhouse9
-map = 5
-mapname = "ÃØÃÜÐ¡Â·"
-mx = 2: my = 5
-m(1) = "ttttttttttttttt"
-m(2) = "t0000000000000t"
-m(3) = "t0000000000000t"
-m(4) = "tttttttttttt0tt"
-m(5) = "t0000000000000e"
-m(6) = "tttt0tttttttttt"
-m(7) = "t0000000000004t"
-m(8) = "ttttttttttttttt"
-
-l(4) = 6: start(4) = 1
-s(1) = manname + "£ºÑ½£¡ÂíËÉ£¬ÄãÔõÃ´ÅÜµ½ÕâÀïÀ´ÁË£¿ss"
-s(2) = "ÂíËÉ£ºÎÒÕýÔÚÕªÇÉ¿ËÁ¦µ°¸â£¬ºöÈ»¿´¼ûÇ°ÃæÓÐÒ»¿ÃÆ»¹ûÊ÷£¬"
-s(3) = "     ``ÒªÖªµÀ£¬Ä¾Í°Ð¡ÕòÒÑ¾­ºÜ¶àÄêÃ»ÓÐÆ»¹ûÊ÷ÁË¡£ss"
-s(4) = manname + "£ºÈ»ºóÄØ£¿ss"
-s(5) = "ÂíËÉ£ºÎÒÏëÈ¥Õª£¬¿É½ÅÏÂÒ»»¬£¬¾Íµôµ½ÕâÀ´ÁË¡£ss"
-s(6) = manname + "£ºÎÒÒÔÇ°ÔõÃ´Ã»À´¹ýÕâÀï£¿£¿ss"
-s(7) = "ÂíËÉ£ºÎÒÃÇÔõÃ´³öÈ¥Ñ½£¿£¿£¡£¡ss"
-into = true
 END SUB
 
 SUB initstore
 addjin = 20
 jin = 1
-KEY 1, CHR$(27) + "ÂíÓî³Û"
-KEY 2, CHR$(27) + "Ôøê¿×Ú"
-KEY 3, CHR$(27) + "º«¼ÑÀï"
+KEY 1, CHR$(27) + "Áîºý³å"
+KEY 2, CHR$(27) + "¹ù½ø"
+KEY 3, CHR$(27) + "ÕÅÎÞ¼°"
 KEY 4, CHR$(27) + "ÀîºéÖ¾"
 KEY 5, CHR$(27) + "Ï£ÌØÀÕ"
 KEY 6, CHR$(27) + "Î¤Ð¡±¦"
@@ -916,22 +759,13 @@ FOR i = 1 TO 15
     PALETTE i, 0
 NEXT
 display = true
-COLOR 14    'name color
+COLOR 14
 FOR i = 1 TO 99
-    action(i) = false             'Î´·¢Éú  ÊÂ¼þ
-    act(i) = false             'Î´·¢Éú   ¶Ô»°etc.
+    action(i) = false
+    act(i) = false
 NEXT
 
-'   FOR cx = 0 TO 600 STEP 40
-'       LINE (cx, 0)-(cx, 320), 3
-'   NEXT
-'   FOR cy = 0 TO 320 STEP 40
-'       LINE (0, cy)-(600, cy), 3
-'   NEXT
-
-'map=15x8     box=40x40
 COLOR 14
-'----------------------------------------------------men4
 jin = jin + addjin: GOSUB add
 FOR i = 10 TO 25: CIRCLE (20, 10), i, 6: NEXT
 FOR i = 10 TO 23: CIRCLE (20, 12), i, 6: NEXT
@@ -960,7 +794,6 @@ GET (1, 1)-(39, 39), man4
 LINE (25, 18)-(26, 19), 7, B
 LINE (24, 19)-(27, 19), 0, B
 GET (1, 1)-(39, 39), autoMan4
-'----------------------------------------------------men3
 jin = jin + addjin: GOSUB add
 FOR i = 10 TO 25: CIRCLE (20, 10), i, 6: NEXT
 FOR i = 10 TO 23: CIRCLE (20, 12), i, 6: NEXT
@@ -991,7 +824,6 @@ LINE (13, 18)-(14, 19), 7, B
 LINE (12, 19)-(15, 19), 0, B
 GET (1, 1)-(39, 39), autoMan3
 IF pause THEN a$ = INPUT$(1)
-'----------------------------------------------------men1
 jin = jin + addjin: GOSUB add
 FOR i = 10 TO 25: CIRCLE (20, 10), i, 6: NEXT
 FOR i = 10 TO 23: CIRCLE (20, 12), i, 6: NEXT
@@ -1012,7 +844,6 @@ CIRCLE (7, 27), 2, 7: CIRCLE (33, 27), 2, 7
 CIRCLE (15, 36), 1, 7: CIRCLE (25, 36), 1, 7
 GET (1, 1)-(39, 39), man1
 IF pause THEN a$ = INPUT$(1)
-'----------------------------------------------------men2
 jin = jin + addjin: GOSUB add
 FOR i = 10 TO 25: CIRCLE (20, 10), i, 6: NEXT
 FOR i = 10 TO 23: CIRCLE (20, 12), i, 6: NEXT
@@ -1069,10 +900,9 @@ LINE (13, 1)-(23, 1), c
 PSET (18, 6), c
 CIRCLE (20, 4), 1, c
 CIRCLE (16, 4), 1, c
-GET (1, 1)-(39, 39), people1                      'people 1
+GET (1, 1)-(39, 39), people1
 jin = jin + addjin: GOSUB add
 PUT (1, 1), people1
-'LOCATE 2, 1: PRINT "¹ù Î¡"
 GET (0, 0)-(40, 40), people1
 jin = jin + addjin: GOSUB add
 FOR i = 0 TO 19
@@ -1082,9 +912,9 @@ FOR i = 1 TO 5
     CIRCLE (10, 25), i, 1
 NEXT
 LINE (19, 1)-(21, 20), 7, BF
-GET (1, 1)-(39, 39), people2                           'people2
+GET (1, 1)-(39, 39), people2
 jin = jin + addjin: GOSUB add
-LOCATE 2, 1: PRINT "¹Ë Åô"
+LOCATE 2, 1: PRINT "Æ½ Ö®"
 CIRCLE (20, 20), 19, 6
 FOR i = 1 TO 5
     CIRCLE (30, 15), i, 2
@@ -1095,8 +925,8 @@ NEXT
 
 GET (1, 1)-(39, 39), people3
 IF pause THEN a$ = INPUT$(1)
-jin = jin + addjin: GOSUB add       '                                ÂíËÉ
-LOCATE 2, 1: PRINT "Âí ËÉ"
+jin = jin + addjin: GOSUB add
+LOCATE 2, 1: PRINT "Ãû Óè"
 CIRCLE (20, 20), 19, 14
 FOR i = 1 TO 5
     CIRCLE (30, 15), i, 9
@@ -1104,10 +934,9 @@ NEXT
 FOR i = 1 TO 5
     CIRCLE (10, 15), i, 9
 NEXT
-GET (1, 1)-(39, 39), people4   '          ÂíËÉ
+GET (1, 1)-(39, 39), people4
 IF pause THEN a$ = INPUT$(1)
 jin = jin + addjin: GOSUB add
-'                                                            ÏÉÈË
 FOR i = 1 TO 10
     CIRCLE (20, 43), i, 10
 NEXT
@@ -1133,9 +962,8 @@ CIRCLE (25, 28), 3, 0
 FOR i = 1 TO 2
     CIRCLE (25, 28), i, 10
 NEXT
-GET (1, 1)-(39, 39), people5                             'people5
+GET (1, 1)-(39, 39), people5
 IF pause THEN a$ = INPUT$(1)
-'----------------------------------------------------people6
 jin = jin + addjin: GOSUB add
 LINE (8, 11)-(32, 30), 5, BF: LINE (2, 11)-(8, 26), 12, BF: LINE (32, 11)-(38, 26), 12, BF
 LINE (5, 27)-(8, 31), 6, BF: LINE (35, 27)-(32, 31), 6, BF: LINE (10, 31)-(18, 35), 4, BF
@@ -1146,7 +974,7 @@ NEXT
 FOR i = 1 TO 8
     CIRCLE (20, 11), i, 0
 NEXT
-GET (1, 1)-(39, 39), people6                      'people6
+GET (1, 1)-(39, 39), people6
 IF pause THEN a$ = INPUT$(1)
 jin = jin + addjin: GOSUB add
 CIRCLE (6, 10), 5, 7: CIRCLE (34, 10), 5, 7
@@ -1172,28 +1000,19 @@ LINE (16, 18)-(17, 18), 0: LINE (24, 18)-(25, 18), 0
 PSET (17, 19), 0: PSET (25, 19), 0
 LINE (16, 19)-(16, 18), 0: LINE (24, 19)-(25, 18), 0
 CIRCLE (20, 23), 2, 0: LINE (18, 21)-(22, 23), 7, BF
-GET (1, 1)-(39, 39), people9                                'people9
+GET (1, 1)-(39, 39), people9
 jin = jin + addjin: GOSUB add
-'CIRCLE (20, 20), 19, 7
 CIRCLE (20, 15), 10, 2, , , .6
 CIRCLE (20, 26), 15, 2, , , .4
 LINE (20, 15)-(20, 39), 2
-GET (1, 1)-(39, 39), tree                              'tree
+GET (1, 1)-(39, 39), tree
 IF pause THEN a$ = INPUT$(1)
-
-'jin=jin+addjin:gosub add
-'LOCATE 2, 2: PRINT CHR$(29)
-'INE (1, 1)-(39, 39), 2, B
-'INE (4, 4)-(35, 35), 2, B
-'IRCLE (10, 20), 3, 5
-'IF pause THEN a$ = INPUT$(1)
-'GET (1, 1)-(39, 39), door
 
 jin = jin + addjin: GOSUB add
 FOR i = 5 TO 15 STEP 3
 CIRCLE (20, 20), i, 14
 NEXT
-GET (1, 1)-(39, 39), myst                               'myst
+GET (1, 1)-(39, 39), myst
 jin = jin + addjin: GOSUB add
 diskc = 2
 LINE (9, 21)-(13, 32), diskc, B
@@ -1201,12 +1020,9 @@ LINE (13, 28)-(16, 20), diskc, B
 LINE (25, 20)-(29, 32), diskc, B
 LINE (29, 20)-(31, 29), diskc, B
 LINE (5, 6)-(35, 20), diskc, BF
-GET (1, 1)-(39, 39), disk                         'disk
-'END
+GET (1, 1)-(39, 39), disk
 IF pause THEN a$ = INPUT$(1)
 jin = jin + addjin: GOSUB add
-'wallc = 4    'back color
-'wallcl = 8   'line color
 wallc = 2
 wallcl = 4
 
@@ -1215,8 +1031,8 @@ wallcl = 4
 
 
 LINE (1, 1)-(38, 20), wallc, BF
-LINE (1, 6)-(39, 6), wallcl         'ºáÏß
-LINE (1, 13)-(39, 13), wallcl       'ºáÏß
+LINE (1, 6)-(39, 6), wallcl
+LINE (1, 13)-(39, 13), wallcl
 LINE (2, 6)-(2, 13), wallcl
 LINE (11, 1)-(11, 6), wallcl
 LINE (11, 13)-(11, 20), wallcl
@@ -1230,31 +1046,30 @@ PUT (1, 27), wall, PSET
 GET (1, 1)-(39, 39), wall
 IF pause THEN a$ = INPUT$(1)
 jin = jin + addjin: GOSUB add
-LINE (2, 40)-(20, 10), 2     '/
+LINE (2, 40)-(20, 10), 2
 IF pause THEN a$ = INPUT$(1)
-LINE -STEP(40, 0), 2          '--
+LINE -STEP(40, 0), 2
 IF pause THEN a$ = INPUT$(1)
-LINE (78, 40)-(60, 10), 2      '\
+LINE (78, 40)-(60, 10), 2
 IF pause THEN a$ = INPUT$(1)
-LINE (78, 40)-(2, 40), 2       '-----
+LINE (78, 40)-(2, 40), 2
 IF pause THEN a$ = INPUT$(1)
-LINE (12, 40)-(70, 70), 2, BF  'box
+LINE (12, 40)-(70, 70), 2, BF
 IF pause THEN a$ = INPUT$(1)
-LINE (24, 10)-(34, 4), 2, B 'yan
+LINE (24, 10)-(34, 4), 2, B
 IF pause THEN a$ = INPUT$(1)
-LINE (15, 69)-(30, 45), 0, BF   'door
+LINE (15, 69)-(30, 45), 0, BF
 IF pause THEN a$ = INPUT$(1)
-CIRCLE (18, 57), 1, 2           'lock
+CIRCLE (18, 57), 1, 2
 IF pause THEN a$ = INPUT$(1)
-LINE (40, 60)-(62, 47), 0, BF   'windows
+LINE (40, 60)-(62, 47), 0, BF
 IF pause THEN a$ = INPUT$(1)
-LINE (45, 56)-(47, 50), 1     '|light
+LINE (45, 56)-(47, 50), 1
 IF pause THEN a$ = INPUT$(1)
-LINE (52, 56)-(54, 50), 1     '|
+LINE (52, 56)-(54, 50), 1
 IF pause THEN a$ = INPUT$(1)
 GET (1, 1)-(79, 79), house
 IF pause THEN a$ = INPUT$(1)
-'=--------------------------------------yun
 jin = jin + addjin: GOSUB add
 FOR i = 1 TO 10
     CIRCLE (12, 25), i, 7
@@ -1270,7 +1085,6 @@ FOR i = 1 TO 10
 NEXT
 GET (1, 1)-(39, 39), yun
 IF pause THEN a$ = INPUT$(1)
-'--------------------------------------------------tree
 jin = jin + addjin: GOSUB add
 FOR i = 1 TO 5
     CIRCLE (20, 10), i, 2: CIRCLE (15, 15), i, 2: CIRCLE (25, 15), i, 2
@@ -1283,7 +1097,6 @@ FOR i = 1 TO 5
 NEXT
 IF pause THEN a$ = INPUT$(1)
 GET (0, 0)-(40, 40), tree
-'------------------------------------------------house1
 jin = jin + addjin: GOSUB add
 LINE (5, 5)-(35, 20), 6, BF: LINE (8, 21)-(32, 35), 7, BF
 LINE (10, 23)-(18, 31), 0, BF: LINE (14, 23)-(14, 31), 7
@@ -1297,14 +1110,12 @@ LINE (24, 6)-(29, 16), 7, BF: LINE (23, 6)-(30, 8), 7, BF
 GET (1, 1)-(39, 39), house1
 LOCATE 10, 10: PRINT 1
 IF pause THEN a$ = INPUT$(1)
-'------------------------------------------------house2
 jin = jin + addjin: GOSUB add
 LINE (5, 5)-(35, 20), 6, BF: LINE (8, 21)-(32, 35), 7, BF
 LINE (10, 23)-(18, 31), 0, BF: LINE (14, 23)-(14, 31), 7: LINE (10, 27)-(18, 27), 7
 LINE (24, 27)-(29, 35), 0, BF: LINE (24, 6)-(29, 16), 7, BF: LINE (23, 6)-(30, 8), 7, BF
 GET (0, 0)-(40, 40), house2
 LOCATE 10, 10: PRINT 2
-'------------------------------------------------house3
 IF pause THEN a$ = INPUT$(1)
 jin = jin + addjin: GOSUB add
 LINE (5, 15)-(20, 35), 10, BF: LINE (5, 6)-(20, 14), 10, B
@@ -1323,7 +1134,6 @@ NEXT
 GET (0, 0)-(40, 40), house3
 LOCATE 10, 10: PRINT 3
 IF pause THEN a$ = INPUT$(1)
-'------------------------------------------------house4
 jin = jin + addjin: GOSUB add
 LINE (6, 15)-(15, 8), 6: LINE (6, 25)-(15, 19), 6: LINE (6, 25)-(6, 15), 6
 LINE (15, 8)-(23, 15), 6: LINE (15, 19)-(22, 25), 6: LINE (22, 15)-(35, 15), 6
@@ -1337,7 +1147,6 @@ LINE (37, 5)-(38, 6), 7, B
 GET (1, 1)-(39, 39), house4
 LOCATE 10, 10: PRINT 4
 
-'------------------------------------------------house5
 IF pause THEN a$ = INPUT$(1)
 jin = jin + addjin: GOSUB add
 DIM xxx%(500): DIM yyy%(500)
@@ -1385,7 +1194,7 @@ LINE (46, 379)-(501, 411), 1, B
 COLOR 3
 LOCATE 14, 7: PRINT "Produce with Microsoft Quick Basic 4.0"
 LOCATE 16, 7: PRINT "Toyshop Studio 1997-1999"
-LOCATE 18, 7: PRINT "E-main:Toyshop@263.net"
+LOCATE 18, 7: PRINT "E-main:Toyclub@sina.com"
 LOCATE 20, 7: PRINT "Loading..."
 pal
 IF jin > 450 THEN jin = 450
@@ -1403,8 +1212,8 @@ RETURN
 
 END SUB
 
-SUB map1   '15x8
-mapname = "Ä¾Í°Ð¡Õò"
+SUB map1
+mapname = "Ä¾Í°Ð¡Õò"        ' ÕâÀïÒýÓÃ´óÓî¹«Ë¾µÄ<°¢Ã¨°¢¹·>µÄµØÃû
 whichhouse = 1
 IF loadxy THEN IF retn THEN mx = 14: my = 7 ELSE mx = 1: my = 2
 m(1) = "thxt0hxthxhxttt"
@@ -1419,35 +1228,35 @@ m(7) = "hx000tt0ttttt0t"
 m(8) = "xxtttttttttttet"
 
 o(1) = "000000000000000"
-o(2) = "000000000000000"
+o(2) = "a20000000000000"
 o(3) = "000000000000000"
 o(4) = "t00000000000000"
-o(5) = "t00000000000000"
+o(5) = "t00001000000000"
 o(6) = "t00000000000000"
 o(7) = "00000000000000t"
 o(8) = "t00000000000000"
 
 IF NOT action(1) THEN
    l(1) = 4: start(1) = 14
-   s(14) = manname + "£ºÑ½£¡Õâ²»ÊÇ¹ùÎ¡Âð£¿"
-   s(15) = "¹ùÎ¡£ºÄÇÔÛÃÇÔÙ¼û°É....ÎÒÓÐ~~ÖØÒª``µÄÊÂÇéÒª×ö£¬²»Òª´òÈÅÎÒ¡£ss"
+   s(14) = manname + "£ºÑ½£¡Õâ²»ÊÇ¹ù¾¸Âð£¿"
+   s(15) = "¹ù¾¸£ºÄÇÔÛÃÇÔÙ¼û°É....ÎÒÓÐ~~ÖØÒª``µÄÊÂÇéÒª×ö£¬²»Òª´òÈÅÎÒ¡£ss"
    s(16) = manname + "£º......ss"
    s(17) = manname + "£ºÄÇºÃ°É£¬ÎÒÏÈ×ßÁË......ss"
    's(18) = manname + "ÐÄÏë£ºÑ½£¬Ò»¶¨ÊÇ×òÌìÎÒ°ÑËûµÄÏñÆ¤Åª¶ªÁË£¬ËûÉúÎÒµÄÆøÁË¡£ss"
-   s(18) = "¹ùÎ¡ÐÄÏë£ºµ¹Ã¹£¬Æ«Æ«¸ÏÉÏÐ¡±ãÊ±¹ýÀ´¡£ss"
+   s(18) = "¹ù¾¸ÐÄÏë£ºµ¹Ã¹£¬Æ«Æ«¸ÏÉÏÐ¡±ãÊ±¹ýÀ´¡£ss"
 ELSE
    l(1) = 4: start(1) = 1
-   s(1) = "¹ùÎ¡£º" + manname + "£¬×òÌìÍíÉÏ¿´¡´°¢À­ÀÙ¡µÁËÂð£¿ÌØºÃÍæ¡£ss"
+   s(1) = "¹ù¾¸£º" + manname + "£¬×òÌìÍíÉÏ¿´¡´°¢À­ÀÙ¡µÁËÂð£¿ÌØºÃÍæ¡£ss"
    s(2) = manname + "£º¿´ÁË£¬°ÑÎÒÀÖµÃ¶Ç×ÓÖ±ÌÛ¡£ss"
-   s(3) = "¹ùÎ¡£º¶Ô£¡Ã»´í£¡Ö»²»¹ýÃ»¿´µ½½áÎ²£¬µçÊÓ·Â·ðÊÜÁË~~¸ÉÈÅ``£¬"
+   s(3) = "¹ù¾¸£º¶Ô£¡Ã»´í£¡Ö»²»¹ýÃ»¿´µ½½áÎ²£¬µçÊÓ·Â·ðÊÜÁË~~¸ÉÈÅ``£¬"
    s(4) = "      ``È«ÊÇÑ©»¨¡£ss"
    s(5) = manname + "£ºÎÒ¼ÒÒ²ÊÇ¡£ss"
 END IF
 
 IF action(2) THEN
    l(4) = 1: start(4) = 10
-   s(10) = manname + "£ºÂíËÉ£¬Äã»ØÀ´ÁË¡£ss"
-   s(11) = "ÂíËÉ£ºÎÒ´ÓÆÂÉÏÅÀÉÏÀ´ÁË¡£ss"
+   s(10) = manname + "£ºÂíÃûÓè£¬Äã»ØÀ´ÁË¡£ss"
+   s(11) = "ÂíÃûÓè£ºÎÒ´ÓÆÂÉÏÅÀÉÏÀ´ÁË¡£ss"
 END IF
 END SUB
 
@@ -1686,38 +1495,38 @@ o(8) = "000000000000000"
 
 IF NOT action(1) THEN
    l(3) = 7: start(3) = 1
-   s(1) = "¹ËÅô£ºÏÖ´úÉÙÅ®²»¿É½»£¬"
+   s(1) = "ÁÖÆ½Ö®£ºÏÖ´úÉÙÅ®²»¿É½»£¬"
    s(2) = "      ``ÃæËÆÌÒ»¨ÐÄËÆµ¶¡£"
    s(3) = "      ``ÇîÈËÓÐÖ¾Ëý²»°®£¬ss"
    s(4) = "      ``×¨°®ÓÐÇ®µØÎ»¸ß¡£ss"
    s(5) = manname + "£º°¡£¿ss"
-   s(6) = "      ``¹ËÅô£¬ÄãÓÖÊ§ÁµÁË£¿£¿ss"
-   s(7) = "¹ËÅô£º±ðÌáÁË...."
+   s(6) = "      ``ÁÖÆ½Ö®£¬ÄãÓÖÊ§ÁµÁË£¿£¿ss"
+   s(7) = "ÁÖÆ½Ö®£º±ðÌáÁË...."
    s(8) = "      ``»¹ÊÇÏÈÌí±¥¶Ç×ÓÔÙÀ´Ì¸ËùÎ½µÄ~~°®Çé``°É¡£ss"
 ELSE
    l(3) = 0: start(3) = 1
-   s(1) = "¹ËÅô£º±ð´òÈÅÎÒ£¡ÎÒÕýÔÚÁ·¶þ½Ú¹÷¡£ss"
+   s(1) = "ÁÖÆ½Ö®£º±ð´òÈÅÎÒ£¡ÎÒÕýÔÚÁ·¶þ½Ú¹÷¡£ss"
 END IF
 
 l(4) = 12: start(4) = 9
-s(9) = manname + "£ºÑ½£¡Õâ²»ÊÇÂíËÉÂð£¿ss"
-s(10) = "ÂíËÉ£º°¡£¡Ô­À´ÊÇÄãÑ½£¬" + manname + "¡£ÏÅÁËÎÒÒ»Ìø¡£"
+s(9) = manname + "£ºÑ½£¡Õâ²»ÊÇÂíÃûÓèÂð£¿ss"
+s(10) = "ÂíÃûÓè£º°¡£¡Ô­À´ÊÇÄãÑ½£¬" + manname + "¡£ÏÅÁËÎÒÒ»Ìø¡£"
 s(11) = "      ``À´£¬³¢³¢ÎÒÕªµÄÇÉ¿ËÁ¦µ°¸â¡£ss"
 s(12) = manname + "£º......"
 s(13) = "      ``àÅ¡£ÕæºÃ³Ô£¡¡£ss"
 s(14) = manname + "£ºÊÇÄã¼ÒÖÖµÄµ°¸âÊ÷Âð£¿ss"
-s(15) = "ÂíËÉ£º²»ÊÇ£¬ÊÇ¹ùÎ¡¼ÒµÄ¡£ss"
+s(15) = "ÂíÃûÓè£º²»ÊÇ£¬ÊÇ¹ù¾¸¼ÒµÄ¡£ss"
 s(16) = manname + "£º......ss"
-s(17) = "      ``Ô­À´ÊÇ¹ùÎ¡¼ÒµÄ¡£ss"
-s(18) = "      ``ÂíËÉ£¬ÈË¼ÒÐÁÐÁ¿à¿àÖÖµÄµ°¸âÊ÷±»Äã³ÔÁË£¬"
+s(17) = "      ``Ô­À´ÊÇ¹ù¾¸¼ÒµÄ¡£ss"
+s(18) = "      ``ÂíÃûÓè£¬ÈË¼ÒÐÁÐÁ¿à¿àÖÖµÄµ°¸âÊ÷±»Äã³ÔÁË£¬"
 s(19) = manname + "£ºÌ«²»Ó¦¸ÃÁË¡£ss"
-s(20) = "ÂíËÉ£ºµ°¸âºÃ³Ô¡£ss"
+s(20) = "ÂíÃûÓè£ºµ°¸âºÃ³Ô¡£ss"
 s(21) = manname + "£º°¦....ss"
 IF action(2) THEN
    l(3) = 2: start(3) = 1
-   s(1) = "¹ËÅô£º±ð´òÈÅÎÒ£¡ÎÒÕýÔÚÁ·¶þ½Ú¹÷¡£ss"
-   s(2) = manname + "£º¹ËÅô£¬¿´¼ûÂíËÉÁËÂð£¿ss"
-   s(3) = "¹ËÅô£º¸Õ²Å¼ûËûÈ¥Ä¾Í°ÕòÁË¡£ss"
+   s(1) = "ÁÖÆ½Ö®£º±ð´òÈÅÎÒ£¡ÎÒÕýÔÚÁ·¶þ½Ú¹÷¡£ss"
+   s(2) = manname + "£ºÁÖÆ½Ö®£¬¿´¼ûÂíÃûÓèÁËÂð£¿ss"
+   s(3) = "ÁÖÆ½Ö®£º¸Õ²Å¼ûËûÈ¥Ä¾Í°ÕòÁË¡£ss"
 END IF
 END SUB
 
@@ -1835,7 +1644,7 @@ s(8) = "ÀÏÊ¦£º" + manname + "Ñ½£¬Äã×î½øÑ§Ï°¿É²»´óÅ¬Á¦°¡¡£ss"
 s(9) = "      ``ÕâÑùÏÂÈ¥ÔõÃ´²Î¼Ó¸ß¿¼Ñ½£¿ss"
 s(10) = manname + "£º°¡£¿ÎÒ×î½øÅ¬Á¦¶àÁË£¡ss"
 s(11) = manname + "£ºÎÒÃ¿ÌìÍíÉÏÊ®µã¶à²ÅË¯¾õ¡¢ÔçÉÏ²»µ½Æßµã¾ÍÆð´²ÁË¡£ss"
-s(12) = "ÀÏÊ¦£ºÊÇ±ÈÓÚ³©Å¬Á¦¡£ss"
+s(12) = "ÀÏÊ¦£ºÊÇ±ÈÍø°ÔÌìÅ¬Á¦¡£ss"
 s(13) = "      ``ÄÇÄãÆ½Ê±¼¸µãË¯¾õ£¿ss"
 s(14) = manname + "£ºÍíÉÏ°ËµãË¯¾õ¡¢ÔçÉÏÆßµã¾ÍÆð´²¡£ss"
 s(15) = "ÀÏÊ¦£º......ss"
@@ -1865,20 +1674,20 @@ o(7) = "000000000000000"
 o(8) = "000000000000000"
 
    l(4) = 6: start(4) = 1
-   s(1) = manname + "£ºÑ½£¡ÂíËÉ£¬ÄãÔõÃ´ÅÜµ½ÕâÀïÀ´ÁË£¿ss"
-   s(2) = "ÂíËÉ£ºÎÒÕýÔÚÕªÇÉ¿ËÁ¦µ°¸â£¬ºöÈ»¿´¼ûÇ°ÃæÓÐÒ»¿ÃÆ»¹ûÊ÷£¬"
+   s(1) = manname + "£ºÑ½£¡ÂíÃûÓè£¬ÄãÔõÃ´ÅÜµ½ÕâÀïÀ´ÁË£¿ss"
+   s(2) = "ÂíÃûÓè£ºÎÒÕýÔÚÕªÇÉ¿ËÁ¦µ°¸â£¬ºöÈ»¿´¼ûÇ°ÃæÓÐÒ»¿ÃÆ»¹ûÊ÷£¬"
    s(3) = "      ``ÒªÖªµÀ£¬Ä¾Í°Ð¡ÕòÒÑ¾­ºÜ¶àÄêÃ»ÓÐÆ»¹ûÊ÷ÁË..ss"
    s(4) = manname + "£ºÈ»ºóÄØ£¿ss"
-   s(5) = "ÂíËÉ£ºÎÒÏëÈ¥Õª£¬¿É½ÅÏÂÒ»»¬,¾Íµôµ½ÕâÀ´..ss"
+   s(5) = "ÂíÃûÓè£ºÎÒÏëÈ¥Õª£¬¿É½ÅÏÂÒ»»¬,¾Íµôµ½ÕâÀ´..ss"
    s(6) = manname + "£ºÎÒÒÔÇ°ÔõÃ´Ã»À´¹ýÕâÀï£¿£¿ss"
-   s(7) = "ÂíËÉ£ºÎÒÃÇÔõÃ´³öÈ¥Ñ½£¿£¿£¡£¡ss"
+   s(7) = "ÂíÃûÓè£ºÎÒÃÇÔõÃ´³öÈ¥Ñ½£¿£¿£¡£¡ss"
    into = true
 IF act(2) AND NOT action(2) THEN
    clk
    drawmap
    who = 4
    l(4) = 0: start(4) = 1
-   s(1) = manname + "£ºàÅ£¿£¡ÂíËÉÄÄÈ¥ÁË£¿ss"
+   s(1) = manname + "£ºàÅ£¿£¡ÂíÃûÓèÄÄÈ¥ÁË£¿ss"
    into = true
    clk
    rpgsay
@@ -1934,11 +1743,6 @@ CASE "up"
      IF o$ >= "a" AND o$ <= "z" THEN
         find = true
         MID$(o(my - 1), mx, 1) = "0"
-        SELECT CASE o$
-        CASE "t"
-             Search = "ËÉ×Ó"
-        CASE ELSE
-        END SELECT
      END IF
 CASE "down"
      m$ = MID$(m(my + 1), mx, 1)
@@ -1954,11 +1758,6 @@ CASE "down"
      IF o$ >= "a" AND o$ <= "z" THEN
         find = true
         MID$(o(my + 1), mx, 1) = "0"
-        SELECT CASE o$
-        CASE "t"
-             Search = "ËÉ×Ó"
-        CASE ELSE
-        END SELECT
      END IF
 CASE "left"
      IF mx > 1 THEN m$ = MID$(m(my), mx - 1, 1)
@@ -1972,11 +1771,6 @@ CASE "left"
      IF o$ >= "a" AND o$ <= "z" THEN
         find = true
         MID$(o(my), mx - 1, 1) = "0"
-        SELECT CASE o$
-        CASE "t"
-             Search = "ËÉ×Ó"
-        CASE ELSE
-        END SELECT
      END IF
 CASE "right"
      m$ = MID$(m(my), mx + 1, 1)
@@ -1990,14 +1784,22 @@ CASE "right"
      IF o$ >= "a" AND o$ <= "z" THEN
         find = true
         MID$(o(my), mx + 1, 1) = "0"
-        SELECT CASE o$
-        CASE "t"
-             Search = "ËÉ×Ó"
-        CASE ELSE
-        END SELECT
      END IF
 CASE ELSE
 END SELECT
+  IF find THEN
+        SELECT CASE o$
+        CASE "t":
+             Search = "ËÉ×Ó"
+        CASE "a":
+             Search = "Êó¶ù¹û"
+        CASE "b":
+             Search = "°ÙÊÂ¿ÉÀÖ"
+        CASE "j":
+             Search = "Çà·æÎÞÈÐÈÕÔÂÐÇ³½»¢Ð¥ÁúÌ¶½£"
+        CASE ELSE
+        END SELECT
+  END IF
 END FUNCTION
 
 SUB pal STATIC
@@ -2018,15 +1820,15 @@ END SUB
 SUB readhouse
 SELECT CASE whichhouse
        CASE 1
-                   CALL inhouse1
+                   CALL room1
        CASE 2
-                 CALL inhouse2
+                 CALL room2
        CASE 3
-                 'CALL inhouse3
+                 'CALL room3
        CASE 4
-                 'CALL inhouse4
+                 'CALL room4
        CASE 9
-                  CALL inhouse9
+                  CALL room9
       
        CASE ELSE
 END SELECT
@@ -2068,6 +1870,136 @@ END SELECT
 loadxy = true
 END SUB
 
+SUB room1
+toward = "up"
+mapname = "Íõ²»Í£¼ÒÖÐ"
+mx = 8: my = 7
+m(1) = "000000000000000"
+m(2) = "0wwwwwwwwwwwww0"
+m(3) = "0w00d2w000dd0w0"
+IF action(1) THEN m(3) = "0w00d0w020dd0w0"
+m(4) = "0w0000w000000w0"
+m(5) = "0w00wwwww00www0"
+m(6) = "0w00000000000w0"
+m(7) = "0wwwwww00wwwww0"
+m(8) = "000000ziiz00000"
+IF NOT action(1) THEN
+   l(2) = 12: start(2) = 1
+   s(1) = manname + "£ºÍõ²»Í££¡×ß£¬ÉÏÑ§È¥£¡ss"
+   s(2) = "Íõ²»Í££º½ñÌì²»È¥ÁË....ss"
+   s(3) = manname + "£º......ss"
+   s(4) = "Íõ²»Í££ºÏëÆð´²ÕæÊÇ±ÈµÇÌì»¹ÄÑ¡£ss"
+   s(5) = manname + "£ºÎÒËµÄã»¹ÊÇ¿ìÆðµÄºÃ£¬Ì«Ñô¶¼É¹Æ¨¹ÉÁË¡£ss"
+   s(6) = "Íõ²»Í££ºÎÒÀ§ËÀÁË¡£ss"
+   s(7) = manname + "£ºÄãÔõÃ´ÄÇÑùË¯¾õ£¬×ËÊÆÄÑ¿´ËÀÁË¡£ss"
+   s(8) = "Íõ²»Í££º°¡£¡s"
+   s(9) = "      ~~´óÃÎË­ÏÈ¾õ£¬Æ½ÉúÎÒ×ÔÖª¡£²ÝÌÃ´ºË¯×ã£¬´°ÍâÈÕ³Ù³Ù``¡£ss"
+   s(10) = "îõ£¡"
+   s(11) = "...."
+   s(12) = "£¨Íõ²»Í£´Ó´²ÉÏµôÏÂÀ´ÁË....£©ss"
+   s(13) = manname + "£ºÄãÔÙ²»ÆðÎÒ²»ÀíÄãÁË¡£ss"
+ELSE
+   l(2) = 6: start(2) = 1
+   s(1) = manname + "£º°¡£¬Íõ²»Í££¬ÄãÖÕÓÚÆðÀ´ÁË¡£ss"
+   s(2) = "Íõ²»Í££º´ô»á¶ù»¹µÃË¯¡£ss"
+   s(3) = manname + "£º......ss"
+   s(4) = manname + "£ºÄÇ¸ö~~Èë¿Ú``ÓÖ³öÏÖÁË£¬²»ÏëÈ¥¿´¿´Âð£¿ss"
+   s(5) = "Íõ²»Í££º×òÌìÍíÉÏÎÒÔÚÍâ±ßÍæÊ±¿´Ò»¸ö´ó¹ÖÎï´ÓÈë¿Ú×êÁË³öÀ´£¬"
+   s(6) = "      ``ÏÅËÀÎÒÁË¡£ss"
+   s(7) = "      ``²Å²»È¥ÄÇ¹íµØ·½¡£ss"
+END IF
+END SUB
+
+SUB room2
+mapname = "½ÌÊÒÖÐ"
+whichhouse = 2
+IF loadxy THEN mx = 12: my = 2 ELSE mx = 12: my = 2
+m(1) = "wwwwwwwwwwwww00"
+m(2) = "w00060000000i00"
+m(3) = "wdd00ddd00ddw00"
+m(4) = "w00000000000w00"
+m(5) = "wdd00ddd00ddw00"
+m(6) = "w00000000000w00"
+m(7) = "wdd00ddd00ddw00"
+m(8) = "wwwwwwwwwwwww00"
+IF action(1) THEN
+l(6) = 5: start(6) = 1        'l(n)=lengh    start-- start from where
+s(1) = manname + "£ºÀÏÊ¦£¬ÌýËµÄÇ¸öÈë¿ÚÊÇÍ¨Íù~~ÁíÒ»¸öÊÀ½ç``µÄÍ¨µÀ£¬ÊÇÂð£¿ss"
+s(2) = "ÀÏÊ¦£º^#@÷&$#x(&^%ss"
+s(3) = "ÀÏÊ¦£ºÎÒ²»Ïë»Ø´ðÄãµÄÎÊÌâ¡£¶àÉÙÄêÀ´£¬ÄÇ¸öÈë¿Ú²»Öª³öÏÖ¹ý¶àÉÙ»Ø£¬"
+s(4) = "      ``µ«´ÓÃ»ÓÐÈË¸Ò½øÈëÆäÖÐ¡£Ç§Íò±ðµ½ÄÇÀïÈ¥£¡ss"
+s(5) = manname + "£ºÄÇÃ´¿ÉÅÂ....²»¹ýÎÒ²»ÅÂ¡£ss"
+s(6) = "ÀÏÊ¦£º²»ÌýÎÒµÄ»°ÄãÒªºó»ÚµÄ£¡£¡ss"
+ELSE
+  who = 6
+  l(6) = 6: start(6) = 1        'l(n)=lengh    start-- start from where
+  s(1) = "ÀÏÊ¦£ºÍ¬Ñ§ÃÇ£¬ÎÒÃÇÀ´×öµÀËãÊõÌâ¡£ss"
+  s(2) = "ÀÏÊ¦£º»¨£±£°£°ÔªÂòÁËÒ»Ö»Ñò£¬ÕÒ»Ø£±£²£°Ôª£¬ss"
+  s(3) = "      ``ÇëÎÊÃ¿Ö»Ñò¶àÉÙÇ®£¿ss"
+  s(4) = manname + "£º±¨¸æ£¡ss"
+  s(5) = "ÀÏÊ¦£º°¡£¿£¡" + manname + "£¡ÄãÓÖ³Ùµ½ÁË£¡ss"
+  s(6) = manname + "£º°¡£¡....²»£¬²»ÊÇ....ÎÒ....ss"
+  s(7) = "ÀÏÊ¦£º" + manname + "£¡¸øÎÒ³öÈ¥·£Õ¾£¡£¡ss"
+
+END IF
+IF NOT action(1) THEN
+    mx = 12: my = 2
+    toward = "left"
+    drawmap
+    x = mx * 40 - 40: y = my * 40 - 40
+    PUT (x + 1, y + 1), man3, PSET
+    rpgsay
+    CLS
+    PALETTE 15, 0
+    COLOR 15
+    VIEW PRINT
+    LOCATE 12, 30
+    PRINT "·ÅÑ§ºó......"
+    FOR i = 1 TO 40 STEP 2
+        PALETTE 15, 65535 * i + 256 * i + i
+        t = TIMER
+        WHILE TIMER - t < .1: WEND
+    NEXT
+    FOR i = 45 TO 1 STEP -2
+        'PALETTE 11, 65535 * i + 256 * i + i
+        PALETTE 15, 65535 * i + 256 * i + i
+        t = TIMER
+        WHILE TIMER - t < .05: WEND
+    NEXT
+    CLS
+    action(1) = true
+    map = 5
+    loadxy = true
+    map5
+    loadxy = false
+    into = false
+END IF
+END SUB
+
+SUB room9
+map = 5
+mapname = "ÃØÃÜÐ¡Â·"
+mx = 2: my = 5
+m(1) = "ttttttttttttttt"
+m(2) = "t0000000000000t"
+m(3) = "t0000000000000t"
+m(4) = "tttttttttttt0tt"
+m(5) = "t0000000000000e"
+m(6) = "tttt0tttttttttt"
+m(7) = "t0000000000004t"
+m(8) = "ttttttttttttttt"
+
+l(4) = 6: start(4) = 1
+s(1) = manname + "£ºÑ½£¡ÂíÃûÓè£¬ÄãÔõÃ´ÅÜµ½ÕâÀïÀ´ÁË£¿ss"
+s(2) = "ÂíÃûÓè£ºÎÒÕýÔÚÕªÇÉ¿ËÁ¦µ°¸â£¬ºöÈ»¿´¼ûÇ°ÃæÓÐÒ»¿ÃÆ»¹ûÊ÷£¬"
+s(3) = "     ``ÒªÖªµÀ£¬Ä¾Í°Ð¡ÕòÒÑ¾­ºÜ¶àÄêÃ»ÓÐÆ»¹ûÊ÷ÁË¡£ss"
+s(4) = manname + "£ºÈ»ºóÄØ£¿ss"
+s(5) = "ÂíÃûÓè£ºÎÒÏëÈ¥Õª£¬¿É½ÅÏÂÒ»»¬£¬¾Íµôµ½ÕâÀ´ÁË¡£ss"
+s(6) = manname + "£ºÎÒÒÔÇ°ÔõÃ´Ã»À´¹ýÕâÀï£¿£¿ss"
+s(7) = "ÂíÃûÓè£ºÎÒÃÇÔõÃ´³öÈ¥Ñ½£¿£¿£¡£¡ss"
+into = true
+END SUB
+
 SUB rpgsay
 COLOR 3
 VIEW PRINT 20 TO 23
@@ -2092,7 +2024,7 @@ DO
             k$ = MID$(s(sayline), i, 2)
             IF k$ = ":" OR k$ = "£º" THEN COLOR 3
             IF LEFT$(k$, 1) = "`" THEN COLOR 3: k$ = ""
-            IF LEFT$(k$, 1) = "~" THEN COLOR 10: k$ = ""        '¼ÓÖØ
+            IF LEFT$(k$, 1) = "~" THEN COLOR 10: k$ = ""
             IF RIGHT$(k$, 1) = "A" OR k$ = "£Á" THEN act(active) = true: k$ = "": active = false
             IF RIGHT$(k$, 1) = "s" OR k$ = "£ó" THEN EXIT FOR
             PRINT k$;
@@ -2115,7 +2047,7 @@ DO
              IF TIMER - autotime > 2 THEN CALL autorun: autotime = TIMER
            LOOP WHILE a$ = "" OR a$ = up$ OR a$ = down$ OR a$ = lef$ OR a$ = righ$
            LINE (480, 430)-(490, 435), 0, BF
-           LOCATE 23, 39: PRINT " "         'NEXT LINE
+           LOCATE 23, 39: PRINT " "
            LOCATE y0 - 1, 1
         END IF
         LINE (0, 330)-(550, 450), 1, B
@@ -2156,7 +2088,7 @@ a$ = INPUT$(1)
 LOCATE 22, 30: PRINT "                               "
 END SUB
 
-SUB sleeping '500,420
+SUB sleeping
 'LINE (0, 0)-(10, 0), 15     '  x=10     /=5
 'LINE (0, 0)-(5, 5), 15
 'LINE (5, 5)-(10, 0), 15
@@ -2180,7 +2112,7 @@ dc = 3
 c = 4
 
 CLS
-'PUT (50, 100), man4
+
 GOSUB drawman
 GOSUB drawmenu
 GOSUB drawlife
@@ -2220,12 +2152,12 @@ RETURN
     
 END SUB
 
-SUB whitesay (say$) 'ÅÔ°×
-sayl = LEN(say$)
+SUB whitesay (say AS STRING)  'ÅÔ°×
+sayl = LEN(say)
 VIEW PRINT 20 TO 23
 LOCATE 21, 40 - sayl / 2
 FOR i = 1 TO sayl - 1 STEP 2
-    k$ = MID$(say$, i, 2)
+    k$ = MID$(say, i, 2)
     PRINT k$;
     'FOR tmp = 0 TO 15000: NEXT       'sayspeed
     t = TIMER
