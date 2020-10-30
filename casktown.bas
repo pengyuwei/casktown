@@ -41,7 +41,7 @@ DIM SHARED man1(246)
 DIM SHARED autoMan1(246)
 DIM SHARED man2(246)
 DIM SHARED autoMan2(246)
-DIM SHARED Man3(246)
+DIM SHARED man3(246)
 DIM SHARED autoMan3(246)
 DIM SHARED man4(246)
 DIM SHARED autoMan4(246)
@@ -192,21 +192,21 @@ IF in = lef$ THEN
    IF NOT object AND mx > 1 THEN
       IF runstep THEN
          FOR tmp = x TO x - 40 STEP -1
-             PUT (tmp + 1, y + 1), Man3, PSET: PUT (tmp + 1, y + 1), Man3, XOR
-             IF tmp > x - 40 THEN PUT (tmp, y + 1), Man3, PSET
+             PUT (tmp + 1, y + 1), man3, PSET: PUT (tmp + 1, y + 1), man3, XOR
+             IF tmp > x - 40 THEN PUT (tmp, y + 1), man3, PSET
          NEXT
       ELSE
-      PUT (x + 1, y + 1), Man3, PSET: PUT (x + 1, y + 1), Man3
+      PUT (x + 1, y + 1), man3, PSET: PUT (x + 1, y + 1), man3
       END IF
       clk
       mx = mx - 1
       x = mx * 40 - 40: y = my * 40 - 40
-      PUT (x + 1, y + 1), Man3
+      PUT (x + 1, y + 1), man3
    END IF
    say = 0
    'ELSE
    toward = "left"
-   PUT (x + 1, y + 1), Man3, PSET
+   PUT (x + 1, y + 1), man3, PSET
    'END IF
 END IF
 IF in = righ$ THEN
@@ -334,7 +334,7 @@ CASE "left"
          PUT (x + 1, y + 1), autoMan3, PSET
          t = TIMER
          WHILE TIMER - t < .04: WEND
-         PUT (x + 1, y + 1), Man3, PSET
+         PUT (x + 1, y + 1), man3, PSET
          t = TIMER
          WHILE TIMER - t < .3: WEND
      NEXT
@@ -432,7 +432,7 @@ PUT (x + 1, y + 1), man4, PSET
 t = TIMER
 WHILE TIMER - t < .8: WEND
 
-PUT (x + 1, y + 1), Man3, PSET
+PUT (x + 1, y + 1), man3, PSET
 t = TIMER
 WHILE TIMER - t < .5: WEND
 NEXT
@@ -537,7 +537,7 @@ CASE "up"
 CASE "down"
    PUT (x + 1, y + 1), man2, PSET': PUT (x + 1, y + 1), man2
 CASE "left"
-   PUT (x + 1, y + 1), Man3, PSET': PUT (x + 1, y + 1), man3
+   PUT (x + 1, y + 1), man3, PSET': PUT (x + 1, y + 1), man3
 CASE "right"
    PUT (x + 1, y + 1), man4, PSET': PUT (x + 1, y + 1), man4
 CASE ELSE
@@ -627,7 +627,7 @@ PRINT "E-mail   : Toyshop@263.net"
 pal
 COLOR 15
 LOCATE 11, 15
-PRINT "内部测试版  V56.5"
+PRINT "内部测试版  V56.7"
 
 COLOR 13
 LOCATE 14, 15
@@ -651,6 +651,14 @@ FOR i = 45 TO 1 STEP -1
     pal
     WHILE TIMER - t < .05: WEND
 NEXT
+
+   l(1) = 1: start(1) = 1
+   s(1) = "导演：这剧本谁写的？ss"
+   s(2) = "策划：不知道。ss"
+CLS
+toward = "right"
+LOCATE 13, 2: PRINT "？"
+rpgsay
 clk
 pal
 CLS
@@ -703,7 +711,7 @@ LOCATE 9, 35: PRINT "PRESENT"
 LOCATE 19, 50: PRINT "    ART : G.W."
 LOCATE 20, 50: PRINT "Program : P.Y.W.(SEA)"
 LOCATE 21, 50: PRINT "   Main : 1998.11-1999.2"
-LOCATE 22, 48: PRINT "最后修改于1999年08月08日."
+LOCATE 22, 48: PRINT "最后修改于1999年08月17日."
 
 FOR toyi = 1 TO 42
     PALETTE 15, 65535 * toyi + 256 * toyi + toyi
@@ -811,7 +819,7 @@ IF NOT action(1) THEN
     toward = "left"
     drawmap
     x = mx * 40 - 40: y = my * 40 - 40
-    PUT (x + 1, y + 1), Man3, PSET
+    PUT (x + 1, y + 1), man3, PSET
     rpgsay
     CLS
     PALETTE 15, 0
@@ -978,7 +986,7 @@ CIRCLE (8, 35), 1, 7: CIRCLE (32, 35), 1, 7: CIRCLE (20, 37), 1, 7: CIRCLE (20, 
 LINE (13, 36)-(14, 37), 7, B: LINE (26, 36)-(27, 37), 7, B
 CIRCLE (24, 20), 2, 0, -2, -1.5: PSET (22, 19), 15: PSET (23, 18), 7
 PSET (23, 20), 0
-GET (1, 1)-(39, 39), Man3
+GET (1, 1)-(39, 39), man3
 LINE (13, 18)-(14, 19), 7, B
 LINE (12, 19)-(15, 19), 0, B
 GET (1, 1)-(39, 39), autoMan3
@@ -2125,8 +2133,6 @@ FOR saybox = 550 TO 250 STEP -1
     LINE (saybox, 450)-(550 - saybox, 450), 1, B
 NEXT
 LINE (0, 330)-(550, 450), 0, BF
-
-
 clk
 VIEW PRINT
 END SUB
