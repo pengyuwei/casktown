@@ -1,12 +1,12 @@
 # 木桶镇RPG
 
-大一的时候在学校机房写的RPG游戏。
+1998年在学校机房写的RPG游戏。
 
 运行环境是DOS 6 + QuickBasic 4.5 + UCDOS7.0（如果没有UCDOS，文字会错位）
 
-![木桶镇1](http://res.easynight.cn/toyshop/ffb/images/big/rpg1.jpg)
+游戏中没有使用任何外部图片文件，全部图像都是使用代码绘制出来的。
 
-![木桶镇2](http://res.easynight.cn/toyshop/ffb/images/big/rpg2.jpg)
+![木桶镇1](http://res.easynight.cn/toyshop/ffb/images/big/rpg1.jpg)
 
 ![木桶镇3](http://res.easynight.cn/toyshop/ffb/images/big/rpg3.jpg)
 
